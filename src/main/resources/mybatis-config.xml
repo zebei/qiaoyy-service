@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="production">
+
+		<environment id="production">
+			<transactionManager type="JDBC" />
+			<dataSource type="com.qiaoyy.util.C3P0DataSourceFactory">
+				<property name="driverClass" value="com.mysql.jdbc.Driver" />
+				<property name="jdbcUrl" value="jdbc:mysql://59269ebc7c866.bj.cdb.myqcloud.com:16862/qiaoyy" />
+				<property name="user" value="cdb_outerroot" />
+				<property name="password" value="BBBBBBHbj2PP1z" />
+				<property name="initialPoolSize" value="50" />
+				<property name="idleConnectionTestPeriod" value="600" />
+				<property name="maxPoolSize" value="300" />
+				<property name="minPoolSize" value="50" />
+				<property name="maxIdleTime" value="60" />
+				<property name="preferredTestQuery" value="SELECT 1" />
+				<property name="checkoutTimeout" value="10000" />
+			</dataSource>
+		</environment>
+
+
+		<environment id="test">
+			<transactionManager type="JDBC" />
+			<dataSource type="com.qiaoyy.util.C3P0DataSourceFactory">
+				<property name="driverClass" value="com.mysql.jdbc.Driver" />
+				<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/qiaoyy" />
+				<property name="user" value="root" />
+				<property name="password" value="123456" />
+				<property name="initialPoolSize" value="2" />
+				<property name="idleConnectionTestPeriod" value="600" />
+				<property name="maxPoolSize" value="10" />
+				<property name="minPoolSize" value="2" />
+				<property name="maxIdleTime" value="60" />
+				<property name="preferredTestQuery" value="SELECT 1" />
+				<property name="checkoutTimeout" value="10000" />
+			</dataSource>
+		</environment>
+
+		
+
+	</environments>
+	<mappers>
+		<mapper resource="qyuser.xml" />
+	</mappers>
+</configuration>

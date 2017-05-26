@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper_qyuser">
+     <sql id="tb">
+        qyuser
+    </sql>
+    <sql id="cols_all">
+        id, <include refid="cols_exclude_id" />
+    </sql>
+    <sql id="cols_exclude_id">
+       openId,nickName,avatarUrl,gender,language,city,province,country,lastLoginTime
+    </sql>
+   
+    <sql id="vals">
+       #{openId},#{nickName},#{avatarUrl},#{gender},#{language},#{city},#{province},#{country},#{lastLoginTime}
+    </sql>
+    <sql id="criteria">
+        WHERE 1 = 1
+        <if test="id != null"> AND id = #{id} </if>
+        <if test="openId != null"> AND openId =#{openId} </if>
+        <if test="nickName != null"> AND nickName = #{nickName} </if>
+        <if test="avatarUrl != null"> AND avatarUrl = #{avatarUrl} </if>
+        <if test="gender != null"> AND gender = #{gender} </if>
+        <if test="language != null"> AND language = #{language} </if>
+        <if test="city != null"> AND city = #{city} </if>
+        <if test="province != null"> AND province = #{province} </if>
+        <if test="country != null"> AND country = #{country} </if>
+    </sql>
+
+	<select id="select" resultType="com.qiaoyy.model.UserModel" parameterType="map">
+		select * from <include refid="tb"/>  <include refid="criteria"/>
+	</select>
+    <insert id="loginSaveUser" parameterType="com.qiaoyy.model.UserModel" keyProperty="mbid" useGeneratedKeys="true">
+        insert into <include refid="tb"/>
+        (<include refid="cols_exclude_id"/>)
+        values(<include refid="vals"/>)
+        ON
+        DUPLICATE KEY UPDATE lastLoginTime=#{lastLoginTime}
+    </insert>
+	
+
+</mapper>
