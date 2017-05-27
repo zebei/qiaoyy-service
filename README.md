@@ -1,9 +1,10 @@
 # qiaoyy-service
 
 5-27
+
 配置文件 Linux路径"/etc/qcloud/sdk.config";
 
-
+重启服务器tomcat      systemctl restart tomcat
 
 5-26 
 
