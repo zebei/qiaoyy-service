@@ -6,6 +6,14 @@
 
 重启服务器tomcat      systemctl restart tomcat
 
+<Context path="" docBase="com.qcloud.weapp.demo">
+
+                <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+</Context>
+
+
+
 5-26 
 
 初始项目构建完成
