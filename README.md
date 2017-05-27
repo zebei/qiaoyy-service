@@ -1,5 +1,10 @@
 # qiaoyy-service
 
+5-27
+配置文件 Linux路径"/etc/qcloud/sdk.config";
+
+
+
 5-26 
 
 初始项目构建完成
