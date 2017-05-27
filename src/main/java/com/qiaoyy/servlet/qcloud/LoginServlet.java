@@ -18,7 +18,6 @@ import com.qcloud.weapp.authorization.LoginServiceException;
 import com.qcloud.weapp.authorization.UserInfo;
 import com.qiaoyy.mannger.UserManager;
 import com.qiaoyy.model.UserModel;
-import com.qiaoyy.servlet.test.TestServlet;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {

@@ -10,11 +10,11 @@
         id, <include refid="cols_exclude_id" />
     </sql>
     <sql id="cols_exclude_id">
-       openId,nickName,avatarUrl,gender,language,city,province,country,lastLoginTime
+       openId,nickName,avatarUrl,gender,language,city,province,country,regisTime,lastLoginTime
     </sql>
    
     <sql id="vals">
-       #{openId},#{nickName},#{avatarUrl},#{gender},#{language},#{city},#{province},#{country},#{lastLoginTime}
+       #{openId},#{nickName},#{avatarUrl},#{gender},#{language},#{city},#{province},#{country},#{regisTime},#{lastLoginTime}
     </sql>
     <sql id="criteria">
         WHERE 1 = 1
@@ -37,7 +37,8 @@
         (<include refid="cols_exclude_id"/>)
         values(<include refid="vals"/>)
         ON
-        DUPLICATE KEY UPDATE lastLoginTime=#{lastLoginTime}
+        DUPLICATE KEY UPDATE 
+        nickName=#{nickName},avatarUrl=#{avatarUrl},gender=#{gender},language=#{language},city=#{city},province=#{province},country=#{country},lastLoginTime=#{lastLoginTime}
     </insert>
 	
 

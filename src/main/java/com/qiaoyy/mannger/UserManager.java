@@ -18,7 +18,9 @@ public class UserManager {
         return userManager;
     }
     public void loginSaveUser(UserModel userModel) {
-        userModel.setLastLoginTime(System.currentTimeMillis());
+        long currentTime=System.currentTimeMillis();
+        userModel.setLastLoginTime(currentTime);
+        userModel.setRegisTime(currentTime);
         loginSaveUserThread(userModel);
     }
     private void loginSaveUserThread(UserModel user) {

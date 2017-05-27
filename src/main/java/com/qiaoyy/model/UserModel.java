@@ -13,6 +13,7 @@ public class UserModel {
     private String city;
     private String province;
     private String country;
+    private long regisTime;
     private long lastLoginTime;
     public long getId() {
         return id;
@@ -67,6 +68,12 @@ public class UserModel {
     }
     public void setCountry(String country) {
         this.country = country;
+    }
+    public long getRegisTime() {
+        return regisTime;
+    }
+    public void setRegisTime(long regisTime) {
+        this.regisTime = regisTime;
     }
     public long getLastLoginTime() {
         return lastLoginTime;
