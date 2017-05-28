@@ -72,10 +72,10 @@
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.0</version>
-				<configuration>
-				    <warSourceDirectory>WebContent</warSourceDirectory>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>  
-				</configuration>
+				<!--<configuration>-->
+				    <!--<warSourceDirectory>WebContent</warSourceDirectory>-->
+                    <!--<failOnMissingWebXml>false</failOnMissingWebXml>-->
+				<!--</configuration>-->
 			</plugin>
 		</plugins>
 	</build>

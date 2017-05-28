@@ -36,7 +36,8 @@ public class TestServlet extends HttpServlet {
         try {
             String reqJsonContent = MBUtil.getRequestBodyJson(request.getInputStream());
             logger.debug(this.getClass().getSimpleName() + " Request:" + reqJsonContent);
-            
+            logger.info("log test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+            logger.error("log error>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
             UserModel userModel = UserDao.selectModel();
             System.out.println(JSONObject.toJSONString(userModel));
             MBResponse responseModel = null;
@@ -45,7 +46,6 @@ public class TestServlet extends HttpServlet {
             MBResponse.sendResponse(response, out);
            
 //            logger.Debug(this.getClass().getSimpleName() + "[openId:" + commonParm.userid + ",transaction:" + commonParm.transaction + "] Response:" + result);
-
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             logger.error(this.getClass().getSimpleName() + " Exception :", e);

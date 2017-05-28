@@ -26,12 +26,16 @@ public class QCloud {
 		String defaultConfigFilePath = null;
 		boolean isWindows = osName.indexOf("windows") > -1;
 		boolean isLinux = osName.indexOf("linux") > -1;
-		
+		boolean isMac = osName.indexOf("mac os x") > -1;
+
 		if (isWindows) {
 			defaultConfigFilePath = "D:\\wxsdk.config";
 		}
 		else if (isLinux) {
 			defaultConfigFilePath = "/etc/qcloud/sdk.config";
+		}
+		else if (isMac) {
+			defaultConfigFilePath = "/Users/Henry/Documents/WxProgram/sdk.config";
 		}
 		return defaultConfigFilePath;
 	}
