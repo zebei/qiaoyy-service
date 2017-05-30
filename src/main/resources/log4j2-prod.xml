@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" monitorInterval="1">
+
+    <Appenders>
+        <RollingRandomAccessFile name="stdoutLog"
+                                 fileName="logs/stdout/stdout.log"
+                                 filePattern="logs/stdout/stdout.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level (%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/stdout" maxDepth="1">
+                    <IfFileName glob="stdout.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="netLog"
+                                 fileName="logs/net/net.log"
+                                 filePattern="logs/net/net.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level (%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/net" maxDepth="1">
+                    <IfFileName glob="net.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="commonLog"
+                                 fileName="logs/common/common.log"
+                                 filePattern="logs/common/common.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level (%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/common" maxDepth="1">
+                    <IfFileName glob="common.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="errorLog"
+                                 fileName="logs/error/error.log" filePattern="logs/error/error.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level (%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/error" maxDepth="1">
+                    <IfFileName glob="error.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="httpLog"
+                                 fileName="logs/http/http.log" filePattern="logs/http/http.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level(%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/http" maxDepth="1">
+                    <IfFileName glob="http.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="resourceLog"
+                                 fileName="logs/resource/resource.log"
+                                 filePattern="logs/resource/resource.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level(%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/resource" maxDepth="1">
+                    <IfFileName glob="resource.log.*">
+                        <IfLastModified age="168H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="interfaceLog"
+                                 fileName="logs/interface/interface.log"
+                                 filePattern="logs/interface/interface.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level(%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/interface" maxDepth="1">
+                    <IfFileName glob="interface.log.*">
+                        <IfLastModified age="168H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="biLog"
+                                 fileName="logs/bi/bi.log" filePattern="logs/bi/bi.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level(%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/bi" maxDepth="1">
+                    <IfFileName glob="bi.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+
+        <RollingRandomAccessFile name="sqlLog"
+                                 fileName="logs/sql/sql.log" filePattern="logs/sql/sql.log.%d{yyyy.MM.dd.HH}">
+            <PatternLayout charset="UTF-8"
+                           pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5level(%F\:%L) - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1"
+                                           modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="logs/sql" maxDepth="1">
+                    <IfFileName glob="sql.log.*">
+                        <IfLastModified age="72H"/>
+                    </IfFileName>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingRandomAccessFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info" additivity="false" includeLocation="true">
+            <AppenderRef ref="stdoutLog"/>
+        </Root>
+        <Logger name="stdoutLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="stdoutLog"/>
+        </Logger>
+        <Logger name="netLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="netLog"/>
+        </Logger>
+        <Logger name="commonLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="commonLog"/>
+        </Logger>
+        <Logger name="errorLog" level="error" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="errorLog"/>
+        </Logger>
+        <Logger name="httpLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="httpLog"/>
+        </Logger>
+        <Logger name="resourceLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="resourceLog"/>
+        </Logger>
+        <Logger name="interfaceLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="interfaceLog"/>
+        </Logger>
+        <Logger name="biLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="biLog"/>
+        </Logger>
+        <Logger name="sqlLog" level="info" additivity="false"
+                includeLocation="true">
+            <appender-ref ref="sqlLog"/>
+        </Logger>
+    </Loggers>
+
+</Configuration>
