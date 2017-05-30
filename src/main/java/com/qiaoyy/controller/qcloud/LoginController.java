@@ -12,15 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
 
 @Controller
-public class LoginController extends HttpServlet {
-
-    private static final long serialVersionUID = 6585319986631669934L;
+public class LoginController {
 
     /**
      * 处理登录请求

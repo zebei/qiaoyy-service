@@ -16,8 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * 使用 SDK 提供信道服务
  */
 @Controller
-public class TunnelController extends HttpServlet {
-    private static final long serialVersionUID = -6490955903032763981L;
+public class TunnelController {
 
     /**
      * 把所有的请求交给 SDK 处理，提供 TunnelHandler 处理信道事件
