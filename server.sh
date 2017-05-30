@@ -1,7 +1,7 @@
 # 指定环境
 profile=prod
 # jar
-SERVER_JAR="qiaoyy.jar"
+SERVER_JAR="qy.jar"
 # heap size
 HeapSize=1024m
 # permSize
