@@ -3,6 +3,7 @@ package com.qiaoyy.repository;
 import com.qiaoyy.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -12,5 +13,5 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends JpaRepository<UserModel, Long> {
 
     @Query(value = "from UserModel where nickName=:name")
-    public UserModel findByName(String name);
+    public UserModel findByName(@Param("name") String name);
 }

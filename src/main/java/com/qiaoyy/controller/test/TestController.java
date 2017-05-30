@@ -17,13 +17,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Controller
-public class TestServlet extends HttpServlet {
+public class TestController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     @Autowired
     private UserRepository userRepository;
 
-    public TestServlet() {
+    public TestController() {
         super();
 
     }
