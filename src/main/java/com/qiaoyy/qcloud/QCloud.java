@@ -1,43 +1,31 @@
 package com.qiaoyy.qcloud;
 
+import com.qiaoyy.core.AppInit;
+import com.qiaoyy.log.AppLog;
 import org.json.JSONException;
 
 import com.qcloud.weapp.ConfigurationManager;
 import com.qcloud.weapp.ConfigurationException;
 
 public class QCloud {
-	
-	public static void setupSDK() {
-		try {
-			String configFilePath = getConfigFilePath();
-			System.out.println("QCloud SDK 配置文件路径：" + configFilePath);
-			
-			ConfigurationManager.setupFromFile(configFilePath);
-			System.out.println("QCloud SDK 已成功配置！");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ConfigurationException e) {
-			e.printStackTrace();
-		}
-	}
 
-	private static String getConfigFilePath() {
-		String osName = System.getProperty("os.name").toLowerCase();
-		String defaultConfigFilePath = null;
-		boolean isWindows = osName.indexOf("windows") > -1;
-		boolean isLinux = osName.indexOf("linux") > -1;
-		boolean isMac = osName.indexOf("mac os x") > -1;
+    public static void setupSDK() {
+        try {
+            String configFilePath = getConfigFilePath();
+            AppLog.LOG_COMMON.info("QCloud SDK file path：" + configFilePath);
 
-		if (isWindows) {
-			defaultConfigFilePath = "D:\\wxsdk.config";
-		}
-		else if (isLinux) {
-			defaultConfigFilePath = "/etc/qcloud/sdk.config";
-		}
-		else if (isMac) {
-			defaultConfigFilePath = "/Users/Henry/Documents/WxProgram/sdk.config";
-		}
-		return defaultConfigFilePath;
-	}
-	
+            ConfigurationManager.setupFromFile(configFilePath);
+            AppLog.LOG_COMMON.info("QCloud SDK config success！");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String getConfigFilePath() {
+        String defaultConfigFilePath = AppInit.run.getEnvironment().getProperty("app.sdk.path");
+        return defaultConfigFilePath;
+    }
+
 }

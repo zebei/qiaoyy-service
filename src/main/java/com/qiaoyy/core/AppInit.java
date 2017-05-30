@@ -2,6 +2,7 @@ package com.qiaoyy.core;
 
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.netty.WebSocketServer;
+import com.qiaoyy.qcloud.QCloud;
 import com.qiaoyy.thread.ThreadPool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -23,6 +24,8 @@ public class AppInit {
         try {
             // TODO App的所有组件初始化
             AppLog.LOG_NET.info("app.server.init.start");
+            AppLog.LOG_NET.info("QCloud.sdk.setup");
+            QCloud.setupSDK();
             AppLog.LOG_NET.info("thread.pool.init");
             ThreadPool.initThreadsExecutor();
             AppLog.LOG_NET.info("netty.webSocket.start");
