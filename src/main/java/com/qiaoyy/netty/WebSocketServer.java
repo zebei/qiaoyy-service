@@ -48,7 +48,7 @@ public class WebSocketServer {
         try {
             port = Integer.parseInt(AppInit.run.getEnvironment().getProperty("app.port"));
         } catch (Exception e) {
-            AppLog.LOG_NET.error("app.config.err");
+            AppLog.stdout("app.config.err");
             e.printStackTrace();
         }
     }
@@ -77,10 +77,10 @@ public class WebSocketServer {
         try {
             future = bootstrap.bind(port).sync();
             if (future.isSuccess()) {
-                AppLog.LOG_NET.info("webSocket.port.bind.ok - {}", port);
+                AppLog.stdout("webSocket.port.bind.ok - {}", port);
             }
         } catch (InterruptedException e) {
-            AppLog.LOG_NET.info("webSocket.port.bind.err - {}", port);
+            AppLog.stdout("webSocket.port.bind.err - {}", port);
         }
     }
 
@@ -91,6 +91,6 @@ public class WebSocketServer {
         if (bossGroup != null) {
             bossGroup.shutdownGracefully();
         }
-        AppLog.LOG_NET.info("webSocket.port.unbind - {}", port);
+        AppLog.stdout("webSocket.port.unbind - {}", port);
     }
 }

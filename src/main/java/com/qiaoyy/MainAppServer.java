@@ -15,7 +15,7 @@ import com.qiaoyy.log.AppLog;
 public class MainAppServer {
 
     public static void main(String[] args) {
-        AppLog.LOG_NET.info("app.spring.main.start");
+        AppLog.stdout("app.spring.main.start");
         AppInit.spring = new SpringApplication(MainAppServer.class);
         AppInit.run = AppInit.spring.run(args);
         AppInit.init();

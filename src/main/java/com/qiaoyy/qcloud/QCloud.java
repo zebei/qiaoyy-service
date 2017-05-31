@@ -12,10 +12,10 @@ public class QCloud {
     public static void setupSDK() {
         try {
             String configFilePath = getConfigFilePath();
-            AppLog.LOG_COMMON.info("QCloud SDK file path：" + configFilePath);
+            AppLog.stdout("QCloud SDK file path：" + configFilePath);
 
             ConfigurationManager.setupFromFile(configFilePath);
-            AppLog.LOG_COMMON.info("QCloud SDK config success！");
+            AppLog.stdout("QCloud SDK config success！");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ConfigurationException e) {

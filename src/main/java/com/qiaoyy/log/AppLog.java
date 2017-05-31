@@ -82,7 +82,7 @@ public class AppLog {
         for (int i = 0; i < stack.length; i++) {
             StackTraceElement stackTraceElement = stack[i];
             String className = stackTraceElement.getFileName();
-            if (!"Thread.java".equals(className) && !"AMLog.java".equals(className)) {
+            if (!"Thread.java".equals(className) && !"AppLog.java".equals(className)) {
                 realFileName = stackTraceElement.getFileName();
                 realLineNum = stackTraceElement.getLineNumber();
                 break;
