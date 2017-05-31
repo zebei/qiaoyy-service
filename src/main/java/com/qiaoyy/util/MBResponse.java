@@ -8,11 +8,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.alibaba.fastjson.JSONObject;
+
 public class MBResponse {
 
 	public String code;
 	public Object data;
-	public String updatetime;
 	public Map<String, Object> map;
 	
 	
@@ -38,11 +39,10 @@ public class MBResponse {
 	
 
 	
-	public static void sendResponse(HttpServletResponse response,String result) throws UnsupportedEncodingException, IOException{
+	public static void sendResponse(HttpServletResponse response,MBResponse responseModel) throws UnsupportedEncodingException, IOException{
 		response.setHeader("Access-Control-Allow-Origin", "*");
-		
 		response.setStatus(HttpServletResponse.SC_OK);
 		response.setContentType("text/json; charset=UTF-8");
-		response.getOutputStream().write(result.getBytes("UTF-8"));
+		response.getOutputStream().write(JSONObject.toJSONString(responseModel).getBytes("UTF-8"));
 	}
 }

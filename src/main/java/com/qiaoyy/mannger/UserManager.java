@@ -1,17 +1,17 @@
 package com.qiaoyy.mannger;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.qiaoyy.core.AppInit;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.repository.UserRepository;
 import com.qiaoyy.thread.ThreadPool;
 import com.qiaoyy.thread.ThreadType;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Component
 public class UserManager {
     private static final UserManager userManager = new UserManager();
-    private static Logger logger = Logger.getLogger(UserManager.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -36,7 +36,9 @@ public class UserManager {
         ThreadPool.dispatch(ThreadType.PLAYER_THREAD, new Runnable() {
             @Override
             public void run() {
-                userRepository.save(userModel);
+//                userRepositorynew.save(userModel);
+                 AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
+                 
             }
         });
 

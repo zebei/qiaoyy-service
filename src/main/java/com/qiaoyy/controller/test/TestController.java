@@ -1,19 +1,22 @@
 package com.qiaoyy.controller.test;
 
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.repository.UserRepository;
 import com.qiaoyy.util.MBResponse;
+import com.qiaoyy.util.MBResponseCode;
 import com.qiaoyy.util.MBUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @Controller
 public class TestController {
@@ -26,21 +29,23 @@ public class TestController {
 
     }
 
-    @RequestMapping(value = "/test")
+    @RequestMapping(value = "/test/test")
     protected void test(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String reqJsonContent = MBUtil.getRequestBodyJson(request.getInputStream());
-            AppLog.LOG_COMMON.debug(this.getClass().getSimpleName() + " Request:" + reqJsonContent);
-            AppLog.LOG_COMMON.info("log test>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            AppLog.LOG_COMMON.error("log error>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-            UserModel userModel = userRepository.findByName("111");
-            AppLog.LOG_COMMON.info(JSONObject.toJSONString(userModel));
+            String apiTransaction=MBUtil.getUUID();
+            String reqJsonContent = MBUtil.getRequestBodyJson(request);
+            String reqJsonHeaders=MBUtil.getRequestHeadersJson(request);
+            AppLog.LOG_COMMON.info("RequestTransaction:"+apiTransaction+" RequestHeader:" + reqJsonHeaders+" RequestContent:"+reqJsonContent);
+            JSONObject jsonObject=JSON.parseObject(reqJsonContent);
+            UserModel userModel = userRepository.findByUserid(jsonObject.getLong("userid"));
             MBResponse responseModel = null;
-            String out = null;
-            out = JSON.toJSONString(responseModel);
-            MBResponse.sendResponse(response, out);
-
-//            logger.Debug(this.getClass().getSimpleName() + "[openId:" + commonParm.userid + ",transaction:" + commonParm.transaction + "] Response:" + result);
+            if (userModel!=null) {
+                responseModel = MBResponse.getMBResponse(MBResponseCode.SUCCESS, userModel);
+            }else {
+                responseModel=MBResponse.getMBResponse(MBResponseCode.ERROR);
+            }
+            MBResponse.sendResponse(response, responseModel);
+            AppLog.LOG_COMMON.info("ResponseTransaction:"+apiTransaction+" ResponseContent:"+JSONObject.toJSONString(responseModel));
         } catch (Exception e) {
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

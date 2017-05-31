@@ -1,23 +1,36 @@
 package com.qiaoyy.model;
 
-import com.alibaba.fastjson.JSONObject;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+import com.alibaba.fastjson.JSONObject;
+
+@Table(name = "qyuser")
 @Entity
 public class UserModel {
     @Id
     private long id;
+    @Column(name = "openId")
     private String openId;
+    @Column(name = "nickName")
     private String nickName;
+    @Column(name = "avatarUrl")
     private String avatarUrl;
+    @Column(name = "gender")
     private int gender;
+    @Column(name = "language")
     private String language;
+    @Column(name = "city")
     private String city;
+    @Column(name = "province")
     private String province;
+    @Column(name = "country")
     private String country;
+    @Column(name = "regisTime")
     private long regisTime;
+    @Column(name = "lastLoginTime")
     private long lastLoginTime;
 
     public long getId() {
@@ -112,6 +125,5 @@ public class UserModel {
     public String toString() {
         return JSONObject.toJSONString(this);
     }
-
 
 }

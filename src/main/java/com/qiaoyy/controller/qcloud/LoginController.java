@@ -24,7 +24,7 @@ public class LoginController {
      */
     @RequestMapping(value = "/login")
     @ResponseBody
-    public String login(HttpServletRequest request, HttpServletResponse response) {
+    public void login(HttpServletRequest request, HttpServletResponse response) {
         // 通过 ServletRequest 和 ServletResponse 初始化登录服务
         LoginService service = new LoginService(request, response);
         try {
@@ -43,15 +43,12 @@ public class LoginController {
             }
             AppLog.LOG_COMMON.debug("========= LoginSuccess, UserInfo: ==========");
             AppLog.LOG_COMMON.debug(userInfo.toString());
-            return "ok";
         } catch (LoginServiceException e) {
             // 登录失败会抛出登录失败异常
             e.printStackTrace();
-            return "err";
         } catch (ConfigurationException e) {
             // SDK 如果还没有配置会抛出配置异常
             e.printStackTrace();
-            return "err";
         }
     }
 

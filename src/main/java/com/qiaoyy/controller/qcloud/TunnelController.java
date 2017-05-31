@@ -1,16 +1,16 @@
 package com.qiaoyy.controller.qcloud;
 
-import com.qcloud.weapp.ConfigurationException;
-import com.qcloud.weapp.tunnel.TunnelHandleOptions;
-import com.qcloud.weapp.tunnel.TunnelService;
-import com.qiaoyy.qcloud.ChatTunnelHandler;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.qcloud.weapp.ConfigurationException;
+import com.qcloud.weapp.tunnel.TunnelHandleOptions;
+import com.qcloud.weapp.tunnel.TunnelService;
+import com.qiaoyy.qcloud.ChatTunnelHandler;
 
 /**
  * 使用 SDK 提供信道服务
