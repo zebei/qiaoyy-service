@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.qiaoyy.util.MBRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,20 +33,15 @@ public class TestController {
     @RequestMapping(value = "/test/test")
     protected void test(HttpServletRequest request, HttpServletResponse response) {
         try {
-            String apiTransaction=MBUtil.getUUID();
-            String reqJsonContent = MBUtil.getRequestBodyJson(request);
-            String reqJsonHeaders=MBUtil.getRequestHeadersJson(request);
-            AppLog.LOG_COMMON.info("RequestTransaction:"+apiTransaction+" RequestHeader:" + reqJsonHeaders+" RequestContent:"+reqJsonContent);
-            JSONObject jsonObject=JSON.parseObject(reqJsonContent);
+            JSONObject jsonObject = MBRequest.getContent(request);
             UserModel userModel = userRepository.findByUserid(jsonObject.getLong("userid"));
             MBResponse responseModel = null;
-            if (userModel!=null) {
+            if (userModel != null) {
                 responseModel = MBResponse.getMBResponse(MBResponseCode.SUCCESS, userModel);
-            }else {
-                responseModel=MBResponse.getMBResponse(MBResponseCode.ERROR);
+            } else {
+                responseModel = MBResponse.getMBResponse(MBResponseCode.ERROR);
             }
-            MBResponse.sendResponse(response, responseModel);
-            AppLog.LOG_COMMON.info("ResponseTransaction:"+apiTransaction+" ResponseContent:"+JSONObject.toJSONString(responseModel));
+            MBResponse.sendResponse(request, response, responseModel);
         } catch (Exception e) {
             try {
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -118,7 +118,7 @@ public class ThreadPool {
                 keepAliveTime, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 new ThreadFactoryBuilder().setName(name).setUncaughtExceptionHandler(new ThreadPoolExceptionHandler()).build());
-        AppLog.stdout("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
+        AppLog.LOG_COMMON.info("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
         threadPoolExecutors.put(name, executor);
         return executor;
     }
@@ -138,7 +138,7 @@ public class ThreadPool {
                 keepAliveTime, TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<Runnable>(),
                 new ThreadFactoryBuilder().setName(name).setUncaughtExceptionHandler(new ThreadPoolExceptionHandler()).build());
-        AppLog.stdout("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
+        AppLog.LOG_COMMON.info("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
         threadPoolExecutors.put(name, executor);
         return executor;
     }
@@ -157,7 +157,7 @@ public class ThreadPool {
                 keepAliveTime, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>(),
                 new ThreadFactoryBuilder().setName(name).setUncaughtExceptionHandler(new ThreadPoolExceptionHandler()).build());
-        AppLog.stdout("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
+        AppLog.LOG_COMMON.info("线程池{}初始化，核心线程数：{}，最大线程数：{}，阻塞队列：{}", name, corePoolSize, maximumPoolSize, executor.getQueue().getClass().getSimpleName());
         threadPoolExecutors.put(name, executor);
         return executor;
     }

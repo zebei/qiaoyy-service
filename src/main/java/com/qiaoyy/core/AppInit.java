@@ -23,16 +23,16 @@ public class AppInit {
     public static boolean init() {
         try {
             // TODO App的所有组件初始化
-            AppLog.stdout("app.server.init.start");
-            AppLog.stdout("QCloud.sdk.setup");
+            AppLog.LOG_COMMON.info("app.server.init.start");
+            AppLog.LOG_COMMON.info("QCloud.sdk.setup");
             QCloud.setupSDK();
-            AppLog.stdout("thread.pool.init");
+            AppLog.LOG_COMMON.info("thread.pool.init");
             ThreadPool.initThreadsExecutor();
-            AppLog.stdout("netty.webSocket.start");
+            AppLog.LOG_COMMON.info("netty.webSocket.start");
             WebSocketServer.getInstance().start();
         } catch (Exception e) {
             e.printStackTrace();
-            AppLog.stdout("app.server.init.err - {}", e);
+            AppLog.LOG_COMMON.info("app.server.init.err - {}", e);
             System.exit(0);
         }
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -41,7 +41,7 @@ public class AppInit {
                 shutdown();
             }
         }));
-        AppLog.stdout("app.server.init.finish");
+        AppLog.LOG_COMMON.info("app.server.init.finish");
         return true;
     }
 
@@ -53,12 +53,12 @@ public class AppInit {
      */
     public static boolean shutdown() {
         // TODO App的所有组件资源清理
-        AppLog.stdout("app.server.shutdown.start");
-        AppLog.stdout("thread.pool.shutdown");
+        AppLog.LOG_COMMON.info("app.server.shutdown.start");
+        AppLog.LOG_COMMON.info("thread.pool.shutdown");
         ThreadPool.shutdown();
-        AppLog.stdout("netty.webSocket.stop");
+        AppLog.LOG_COMMON.info("netty.webSocket.stop");
         WebSocketServer.getInstance().shut();
-        AppLog.stdout("app.server.shutdown.finish");
+        AppLog.LOG_COMMON.info("app.server.shutdown.finish");
         return true;
     }
 }
