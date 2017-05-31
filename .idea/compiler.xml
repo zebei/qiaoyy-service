@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="qiaoyy-ser" />
+        <module name="qiaoyy-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="qiaoyy-ser" target="1.8" />
+      <module name="qiaoyy-service" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

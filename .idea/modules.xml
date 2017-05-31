@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/qiaoyy-ser.iml" filepath="$PROJECT_DIR$/qiaoyy-ser.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/qiaoyy-service.iml" filepath="$PROJECT_DIR$/.idea/qiaoyy-service.iml" />
     </modules>
   </component>
 </project>
