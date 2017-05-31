@@ -77,7 +77,7 @@ public class WebSocketServer {
         try {
             future = bootstrap.bind(port).sync();
             if (future.isSuccess()) {
-                AppLog.stdout("webSocket.port.bind.ok - {}", port);
+                AppLog.LOG_COMMON.info("webSocket.port.bind.ok - {}", port);
             }
         } catch (InterruptedException e) {
             AppLog.stdout("webSocket.port.bind.err - {}", port);
@@ -91,6 +91,6 @@ public class WebSocketServer {
         if (bossGroup != null) {
             bossGroup.shutdownGracefully();
         }
-        AppLog.stdout("webSocket.port.unbind - {}", port);
+        AppLog.LOG_COMMON.info("webSocket.port.unbind - {}", port);
     }
 }
