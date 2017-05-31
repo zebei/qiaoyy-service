@@ -33,7 +33,7 @@ public class RequestFilter implements Filter {
         String apiTransaction = MBUtil.getUUID();
         String reqJsonContent = MBUtil.getRequestBodyJson((HttpServletRequest) request);
         String reqJsonHeaders = MBUtil.getRequestHeadersJson((HttpServletRequest) request);
-        AppLog.LOG_INTERFACE.info("[req][{}] - {} - {}", apiTransaction, reqJsonHeaders, JSON.toJSONString(request.getParameterMap()));
+        AppLog.LOG_INTERFACE.info("[req][{}] - {} - {}", apiTransaction, reqJsonHeaders, reqJsonContent);
         request.setAttribute(MBRequest.REQ_UUID, apiTransaction);
         request.setAttribute(MBRequest.REQ_CONTENT, reqJsonContent);
         request.setAttribute(MBRequest.REQ_HEADER, reqJsonHeaders);

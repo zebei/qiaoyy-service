@@ -16,14 +16,14 @@ public class InitListener implements ServletContextListener {
      * Default constructor.
      */
     public InitListener() {
-        AppLog.LOG_NET.info("app.initlistener.init - {}", this.getClass().getSimpleName());
+        AppLog.LOG_COMMON.info("app.initlistener.init - {}", this.getClass().getSimpleName());
     }
 
     /**
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent arg0) {
-        AppLog.LOG_NET.info("app.initlistener.init");
+        AppLog.LOG_COMMON.info("app.initlistener.init");
     }
 
 
@@ -31,8 +31,8 @@ public class InitListener implements ServletContextListener {
      * @see ServletContextListener#contextDestroyed(ServletContextEvent)
      */
     public void contextDestroyed(ServletContextEvent arg0) {
-        AppLog.LOG_NET.info(this.getClass().getSimpleName() + " contextDestroyed");
-        AppLog.LOG_NET.info("app.initlistener.destoryed - {}", this.getClass().getSimpleName());
+        AppLog.LOG_COMMON.info(this.getClass().getSimpleName() + " contextDestroyed");
+        AppLog.LOG_COMMON.info("app.initlistener.destoryed - {}", this.getClass().getSimpleName());
     }
 
 }
