@@ -38,7 +38,7 @@ public class UserInfo {
 	 * @param json the json
 	 * @return the user info
 	 */
-	static UserInfo BuildFromJson(JSONObject json) {
+	public static UserInfo BuildFromJson(JSONObject json) {
 		if (json == null) return null;
 		
 		UserInfo userInfo = new UserInfo();

@@ -6,8 +6,6 @@ import org.springframework.stereotype.Component;
 import com.qiaoyy.core.AppInit;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.repository.UserRepository;
-import com.qiaoyy.thread.ThreadPool;
-import com.qiaoyy.thread.ThreadType;
 
 @Component
 public class UserManager {
@@ -24,23 +22,32 @@ public class UserManager {
         return userManager;
     }
 
-    public void loginSaveUser(UserModel userModel) {
+    public UserModel loginSaveUser(UserModel userModel) {
         long currentTime = System.currentTimeMillis();
         userModel.setLastLoginTime(currentTime);
         userModel.setRegisTime(currentTime);
-        loginSaveUserThread(userModel);
+        UserModel user = AppInit.run.getBean(UserRepository.class).findByOpenId(userModel.getOpenId());   
+        if (user!=null) {
+           userModel.setId(user.getId());
+        }
+        AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
+        return userModel;
+        //loginSaveUserThread(userModel);
     }
 
-    private void loginSaveUserThread(UserModel user) {
-        final UserModel userModel = user;
-        ThreadPool.dispatch(ThreadType.PLAYER_THREAD, new Runnable() {
-            @Override
-            public void run() {
-//                userRepositorynew.save(userModel);
-                 AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
-                 
-            }
-        });
-
-    }
+//    private void loginSaveUserThread(UserModel user) {
+//        final UserModel userModel = user;
+//        ThreadPool.dispatch(ThreadType.PLAYER_THREAD, new Runnable() {
+//            @Override
+//            public void run() {
+//                 UserModel user = AppInit.run.getBean(UserRepository.class).findByOpenId(userModel.getOpenId());   
+//                 if (user!=null) {
+//                    userModel.setId(user.getId());
+//                 }
+//                 AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
+//                 
+//            }
+//        });
+//
+//    }
 }

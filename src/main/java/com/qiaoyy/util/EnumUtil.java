@@ -28,7 +28,8 @@ public class EnumUtil {
 		try {
 			value = values.get(index);
 		} catch (Exception e) {
-			String typeName = "unknown";
+			@SuppressWarnings("unused")
+            String typeName = "unknown";
 			if (values != null) {
 				for (T enu : values) {
 					if (enu != null) {

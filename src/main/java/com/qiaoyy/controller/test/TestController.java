@@ -5,19 +5,17 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.qiaoyy.util.MBRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.repository.UserRepository;
+import com.qiaoyy.util.MBRequest;
 import com.qiaoyy.util.MBResponse;
 import com.qiaoyy.util.MBResponseCode;
-import com.qiaoyy.util.MBUtil;
 
 @Controller
 public class TestController {

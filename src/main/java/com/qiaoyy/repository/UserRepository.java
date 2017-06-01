@@ -15,4 +15,8 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
 
     @Query(value = "from UserModel where id=:userid")
     public UserModel findByUserid(@Param("userid") Long userid);
+    @Query(value="from UserModel where open_id=:openId")
+    public UserModel findByOpenId(@Param("openId")String openId);
+    
+    
 }

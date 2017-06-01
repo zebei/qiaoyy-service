@@ -22,7 +22,8 @@ public interface IndexedEnum {
 	public static class IndexedEnumUtil {
 		
 		/** 索引警戒上限，发现超过此值的索引可能存在较大的空间浪费*/
-		private static final int WORNNING_MAX_INDEX = 1000;
+		@SuppressWarnings("unused")
+        private static final int WORNNING_MAX_INDEX = 1000;
 		
 		/**
 		 * 将枚举中的元素放到一个List中，每个元素在list中的下表即为他的index，如果有不连续的index，则空缺的index用null填充

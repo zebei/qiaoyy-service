@@ -1,25 +1,32 @@
 package com.qiaoyy.netty;
 
-import com.alibaba.fastjson.JSON;
-import com.qiaoyy.log.AppLog;
-import com.qiaoyy.thread.ThreadPool;
-import com.qiaoyy.thread.ThreadType;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.websocketx.*;
-import io.netty.util.CharsetUtil;
-
-import java.net.SocketAddress;
-
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.group.ChannelGroup;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.util.CharsetUtil;
+
+import com.alibaba.fastjson.JSON;
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.thread.ThreadPool;
+import com.qiaoyy.thread.ThreadType;
 
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
     private WebSocketServerHandshaker handshaker;
@@ -54,6 +61,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void handleHttpRequest(ChannelHandlerContext ctx,
                                      FullHttpRequest req) throws Exception {
 
@@ -125,6 +133,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         ctx.channel().writeAndFlush(new TextWebSocketFrame(sentMsg));
     }
 
+    @SuppressWarnings("deprecation")
     protected static void sendHttpResponse(ChannelHandlerContext ctx,
                                            FullHttpRequest req, FullHttpResponse res) {
         // 返回应答给客户端

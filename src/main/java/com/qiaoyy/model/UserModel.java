@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 public class UserModel {
     @Id
     private long id;
-    @Column(name = "openId")
+    @Column(name = "openId",unique=true,updatable=false)
     private String openId;
     @Column(name = "nickName")
     private String nickName;
@@ -28,7 +28,7 @@ public class UserModel {
     private String province;
     @Column(name = "country")
     private String country;
-    @Column(name = "regisTime")
+    @Column(name = "regisTime",updatable=false)
     private long regisTime;
     @Column(name = "lastLoginTime")
     private long lastLoginTime;
