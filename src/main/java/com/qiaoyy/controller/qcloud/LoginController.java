@@ -50,6 +50,7 @@ public class LoginController {
                 session.put("id", loginResult.get("id"));
                 session.put("skey", loginResult.get("skey"));
                 session.put("userId", userModel.getId());
+                session.put("score", userModel.getScore());
                 json.put("session", session);
                 service.writeJson(json);
 

@@ -35,6 +35,12 @@ public class UserManager {
         //loginSaveUserThread(userModel);
     }
 
+    public UserModel findByUserid(Long userId) {
+        return userRepository.findByUserid(userId);
+       
+        
+    }
+
 //    private void loginSaveUserThread(UserModel user) {
 //        final UserModel userModel = user;
 //        ThreadPool.dispatch(ThreadType.PLAYER_THREAD, new Runnable() {

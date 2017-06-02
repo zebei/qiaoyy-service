@@ -32,7 +32,8 @@ public class UserModel {
     private long regisTime;
     @Column(name = "lastLoginTime")
     private long lastLoginTime;
-
+    @Column(name="score")
+    private long score;
     public long getId() {
         return id;
     }
@@ -119,6 +120,14 @@ public class UserModel {
 
     public void setLastLoginTime(long lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
+    }
+
+    public long getScore() {
+        return score;
+    }
+
+    public void setScore(long score) {
+        this.score = score;
     }
 
     @Override

@@ -24,13 +24,16 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.StoneManager;
 import com.qiaoyy.thread.ThreadPool;
 import com.qiaoyy.thread.ThreadType;
 
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
     private WebSocketServerHandshaker handshaker;
-
+    
+    
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -105,11 +108,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         // 返回应答消息
+        
         String request = ((TextWebSocketFrame) frame).text();
         AppLog.LOG_INTERFACE.info(String.format("[%s] received - [%s]", ctx.channel(), request));
         try {
             ThreadPool.dispatch(ThreadType.MAIN_THREAD, () -> {
                 // TODO 从这里可以接入到具体的WS逻辑处理
+                JSONObject msgJsonObject=JSON.parseObject(request);
+                if ("stone".equals(msgJsonObject.getString("game"))) {
+                    StoneManager.getInstance().operationCheck(ctx, msgJsonObject.getJSONObject("data"));
+                }
             });
         } catch (Exception e) {
             AppLog.LOG_INTERFACE.error("socket frame error", e);

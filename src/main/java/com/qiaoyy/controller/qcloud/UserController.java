@@ -25,7 +25,6 @@ public class UserController {
         try {
             // 调用检查登录接口，成功后可以获得用户信息，进行正常的业务请求
             UserInfo userInfo = service.check();
-
             // 获取会话成功，输出获得的用户信息
             JSONObject data = new JSONObject();
             data.put("userInfo", new JSONObject(userInfo));

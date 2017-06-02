@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.UserManager;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.repository.UserRepository;
 import com.qiaoyy.util.MBRequest;
@@ -32,7 +33,7 @@ public class TestController {
     protected void test(HttpServletRequest request, HttpServletResponse response) {
         try {
             JSONObject jsonObject = MBRequest.getContent(request);
-            UserModel userModel = userRepository.findByUserid(jsonObject.getLong("userid"));
+            UserModel userModel = UserManager.getInstance().findByUserid(jsonObject.getLong("userid"));
             MBResponse responseModel = null;
             if (userModel != null) {
                 responseModel = MBResponse.getMBResponse(MBResponseCode.SUCCESS, userModel);
