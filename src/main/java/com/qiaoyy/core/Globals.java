@@ -13,7 +13,7 @@ import com.qiaoyy.time.TimeService;
 /**
  * Created by Henry on 2017/6/4.
  */
-public class Globals implements Tickable {
+public class Globals {
 
     /**
      * 时间服务
@@ -57,6 +57,7 @@ public class Globals implements Tickable {
         if (AppInit.run.getEnvironment().containsProperty("app.heartbeat")) {
             heartbeat = Integer.parseInt(AppInit.run.getEnvironment().getProperty("app.heartbeat"));
         }
+        scheduleService.scheduleWithFixedDelay(ThreadType.SYS_THREAD, () -> tick(), heartbeat, heartbeat);
     }
 
     /**
@@ -69,8 +70,7 @@ public class Globals implements Tickable {
         AppLog.LOG_COMMON.info("globals.service.stop.finish");
     }
 
-    @Override
-    public void tick() {
+    public static void tick() {
         // 更新时间缓存
         timeService.update();
         // channel心跳
