@@ -4,17 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.thread.ThreadPool;
 import com.qiaoyy.thread.ThreadType;
+import com.qiaoyy.util.MBRequest;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroup;
-import io.netty.handler.codec.http.DefaultFullHttpResponse;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
+import org.springframework.util.StringUtils;
 
 import java.net.SocketAddress;
+import java.util.List;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
@@ -56,12 +58,30 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 
     protected void handleHttpRequest(ChannelHandlerContext ctx,
                                      FullHttpRequest req) throws Exception {
-
         // 如果HTTP解码失败，返回HHTP异常
         if (!req.getDecoderResult().isSuccess()
                 || (!"websocket".equals(req.headers().get("Upgrade")))) {
             sendHttpResponse(ctx, req, new DefaultFullHttpResponse(HTTP_1_1,
                     BAD_REQUEST));
+            return;
+        }
+
+        QueryStringDecoder decoder = new QueryStringDecoder(req.getUri());
+        Map<String, List<String>> params = decoder.parameters();
+        AppLog.LOG_COMMON.info("ws.http.params - {}", JSON.toJSONString(params));
+        if (!params.containsKey(MBRequest.REQ_USERID)) {
+            // 握手连接必须传userid
+            AppLog.LOG_COMMON.error("websocket.handshake.err - userid is needed");
+            return;
+        }
+        String userIdString = params.get(MBRequest.REQ_USERID).get(0);
+        long userid = 0;
+        try {
+            userid = Long.parseLong(userIdString);
+            ChannelMgr.getInstance().addChannelUser(ctx, userid);
+            ChannelMgr.getInstance().updateChannelHearbeatTime(ctx);
+        } catch (Exception e) {
+            AppLog.LOG_COMMON.error("websocket.handshake.err - userid[{}] must be right formate", userIdString);
             return;
         }
 
@@ -76,6 +96,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         } else {
             handshaker.handshake(ctx.channel(), req);
         }
+
     }
 
     protected void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
@@ -95,6 +116,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             throw new UnsupportedOperationException(String.format(
                     "%s frame types not supported", frame.getClass().getName()));
         }
+
+        // 更新心跳时间
+        ChannelMgr.getInstance().updateChannelHearbeatTime(ctx);
 
         // 返回应答消息
         String request = ((TextWebSocketFrame) frame).text();

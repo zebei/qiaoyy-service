@@ -5,7 +5,7 @@ import com.qcloud.weapp.authorization.LoginService;
 import com.qcloud.weapp.authorization.LoginServiceException;
 import com.qcloud.weapp.authorization.UserInfo;
 import com.qiaoyy.log.AppLog;
-import com.qiaoyy.mannger.UserManager;
+import com.qiaoyy.mannger.user.UserManager;
 import com.qiaoyy.model.UserModel;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.stereotype.Controller;

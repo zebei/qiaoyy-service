@@ -22,7 +22,7 @@ public enum ThreadType implements IndexedEnum {
 
     COUNTRY_THREAD(6, "国战线程"),
 
-    COUNTRY_IO_THREAD(7, "国战IO线程"),
+    CHANNEL_HEART_BEAT_THREAD(7, "通道心跳检测线程"),
 
     SYS_THREAD(8, "系统内部线程"),
 

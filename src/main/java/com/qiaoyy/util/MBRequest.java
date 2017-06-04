@@ -23,6 +23,11 @@ public class MBRequest {
     public final static String REQ_CONTENT = "content";
 
     /**
+     * request userid key
+     */
+    public final static String REQ_USERID = "userid";
+
+    /**
      * 获取请求UUID
      *
      * @param request

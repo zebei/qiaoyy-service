@@ -21,7 +21,7 @@ public class ThreadPool {
     private static ThreadPoolExecutor playerExecutor = null;
     private static ThreadPoolExecutor mailExecutor = null;
     private static ThreadPoolExecutor countryExecutor = null;
-    private static ThreadPoolExecutor countryIoExecutor = null;
+    private static ThreadPoolExecutor channelHeartBeatExecutor = null;
     private static ThreadPoolExecutor sysExecutor = null;
     private static ThreadPoolExecutor chatExecutor = null;
     private static ThreadPoolExecutor payExecutor = null;
@@ -43,7 +43,7 @@ public class ThreadPool {
         playerExecutor = initFixedThreadPool(processorNum * 2, "PLAYER_EXECUTOR");
         mailExecutor = initSingleThread("MAIL_EXECUTOR");
         countryExecutor = initSingleThread("COUNTRY_EXECUTOR");
-        countryIoExecutor = initSingleThread("COUNTRY_IO_EXECUTOR");
+        channelHeartBeatExecutor = initSingleThread("CHANNEL_HEART_BEAT_EXECUTOR");
         sysExecutor = initSingleThread("SYS_EXECUTOR");
         chatExecutor = initSingleThread("CHAT_EXECUTOR");
         payExecutor = initSingleThread("PAY_EXECUTOR");
@@ -77,8 +77,8 @@ public class ThreadPool {
             case COUNTRY_THREAD:
                 countryExecutor.execute(runnable);
                 break;
-            case COUNTRY_IO_THREAD:
-                countryIoExecutor.execute(runnable);
+            case CHANNEL_HEART_BEAT_THREAD:
+                channelHeartBeatExecutor.execute(runnable);
                 break;
             case SYS_THREAD:
                 sysExecutor.execute(runnable);

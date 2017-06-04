@@ -1,6 +1,7 @@
 package com.qiaoyy.core;
 
 import com.qiaoyy.log.AppLog;
+import com.qiaoyy.netty.ChannelMgr;
 import com.qiaoyy.netty.WebSocketServer;
 import com.qiaoyy.qcloud.QCloud;
 import com.qiaoyy.thread.ThreadPool;
@@ -24,6 +25,7 @@ public class AppInit {
         try {
             // TODO App的所有组件初始化
             AppLog.LOG_COMMON.info("app.server.init.start");
+            Globals.init();
             AppLog.LOG_COMMON.info("QCloud.sdk.setup");
             QCloud.setupSDK();
             AppLog.LOG_COMMON.info("thread.pool.init");
@@ -56,9 +58,12 @@ public class AppInit {
         AppLog.LOG_COMMON.info("app.server.shutdown.start");
         AppLog.LOG_COMMON.info("thread.pool.shutdown");
         ThreadPool.shutdown();
+        AppLog.LOG_COMMON.info("netty.channel.close");
+        ChannelMgr.getInstance().closeAllChannel();
         AppLog.LOG_COMMON.info("netty.webSocket.stop");
         WebSocketServer.getInstance().shut();
         AppLog.LOG_COMMON.info("app.server.shutdown.finish");
+        Globals.stop();
         return true;
     }
 }
