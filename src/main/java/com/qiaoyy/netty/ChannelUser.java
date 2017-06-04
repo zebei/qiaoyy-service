@@ -17,6 +17,8 @@ public class ChannelUser implements Hearbeat {
             // 超过心跳时间未活动
             ChannelMgr.getInstance().removeChannelByUserId(player.getUserid());
         }
+        // 玩家心跳
+        player.hearbeat();
     }
 
     public void updateLastActiveTime() {

@@ -4,13 +4,12 @@ import com.qiaoyy.netty.Hearbeat;
 
 /**
  * 玩家内存数据
+ * 存放需要缓存的数据
  * <p>
  * Created by Henry on 2017/6/4.
  */
 public class Player implements Hearbeat {
     private Long userid;
-
-    private int roomId;
 
     public static Player buildPlayer(Long userid) {
         Player player = new Player();

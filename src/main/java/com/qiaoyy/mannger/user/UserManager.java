@@ -36,11 +36,13 @@ public class UserManager {
         ThreadPool.dispatch(ThreadType.PLAYER_THREAD, new Runnable() {
             @Override
             public void run() {
-//                userRepositorynew.save(userModel);
                 AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
 
             }
         });
+    }
 
+    public UserModel findByUserid(Long userId) {
+        return userRepository.findByUserid(userId);
     }
 }

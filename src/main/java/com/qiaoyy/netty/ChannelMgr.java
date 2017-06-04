@@ -24,11 +24,6 @@ public class ChannelMgr implements Tickable {
     private static ChannelMgr inst;
 
     /**
-     * 心跳时间
-     */
-    private static long heartbeatTime = 1 * 1000;
-
-    /**
      * 心跳过期时间
      */
     public static int overdueTime = 3 * 60 * 1000;
@@ -39,17 +34,9 @@ public class ChannelMgr implements Tickable {
     }
 
     public void init() {
-        if (AppInit.run.getEnvironment().containsProperty("app.channel.heartbeat")) {
-            heartbeatTime = Integer.parseInt(AppInit.run.getEnvironment().getProperty("app.channel.heartbeat"));
-        }
         if (AppInit.run.getEnvironment().containsProperty("app.channel.overdue")) {
             overdueTime = Integer.parseInt(AppInit.run.getEnvironment().getProperty("app.channel.overdue"));
         }
-    }
-
-    public void startChannelTick() {
-        AppLog.LOG_COMMON.info("channel.heartbeat.check.start");
-        Globals.getScheduleService().scheduleWithFixedDelay(ThreadType.CHANNEL_HEART_BEAT_THREAD, () -> tick(), 0, heartbeatTime);
     }
 
     @Override
@@ -89,7 +76,7 @@ public class ChannelMgr implements Tickable {
         return ret;
     }
 
-    public void updateChannelHearbeatTime(ChannelHandlerContext ctx) {
+    public void updatChannelLastActiveTime(ChannelHandlerContext ctx) {
         channelMap.get(ctx.channel().id().asShortText()).updateLastActiveTime();
     }
 
@@ -99,9 +86,12 @@ public class ChannelMgr implements Tickable {
      * @Description: 关闭所有Channel void
      */
     public void closeAllChannel() {
+        for (ChannelUser user : channelMap.values()) {
+            user.ctx.close();
+        }
         channelMap.clear();
         playerMap.clear();
-        AppLog.LOG_COMMON.info("关闭所有channel");
+        AppLog.LOG_NET.info("channel.all.close");
     }
 
     /**
@@ -112,8 +102,12 @@ public class ChannelMgr implements Tickable {
      */
     public void removeChannel(ChannelHandlerContext ctx) {
         ChannelUser channelUser = channelMap.get(ctx.channel().id().asShortText());
-        channelMap.remove(channelUser.channelId);
+        channelUser.ctx.close();
+        channelUser = channelMap.remove(channelUser.channelId);
         playerMap.remove(channelUser.player.getUserid());
+        if (channelUser != null) {
+            AppLog.LOG_NET.info("channel.close - userid:{} - channelId:{}", channelUser.player.getUserid(), channelUser.channelId);
+        }
     }
 
     /**

@@ -1,5 +1,29 @@
 # qiaoyy-service
 
+## 6-5
+
+### 添加Globals全局服务管理
+全局服务交给Globals管理，所有全局的服务可以添加到这，通过Globals方便获取，参考TimeService和ScheduleService
+
+### 改进Channel管理
+Channel添加心跳管理，默认时间内没有响应则踢下线，防tcp半连接资源占用
+ChannelUser对象的userid改为Player对象
+Player为新增的玩家内存缓存（目前没有需要缓存的数据，如果需要缓存，往这里加），Player生命周期与Channel一致
+ChannelUser的注册改为连接时注册，在ws连接时需传递参数userid来注册ChannelUser，否则不能正确建立连接
+ws的handler处理逻辑时应按照指定各位传递json字符串，否则不能正确解析
+
+### 添加定时任务服务
+添加全局心跳，服务器指定时间执行一次tick，驱动所有的定时服务
+目前只驱动channel心跳和更新时间缓存
+
+### 添加时间服务
+TimeService为时间服务，对事件缓存，解决系统时间获取的效率问题
+例如获取当前时间：Globals.getTimeService().now();
+
+### 修改WS逻辑接入方式
+添加Api枚举类，所有接口需要在枚举类中定义协议号和该接口使用线程
+添加GameDispatcher，所有逻辑分发在GameDispatcher的dispatch方法中分发，统一逻辑分发入口，具体方式参考TEST协议和STONE协议
+
 ## 5-30
 
 ### 后台框架改为Springboot管理，使用内置tomcat
