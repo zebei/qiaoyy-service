@@ -37,8 +37,8 @@ public class UserManager {
             @Override
             public void run() {
 //                userRepositorynew.save(userModel);
-                 AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
-                 
+                AppInit.run.getBean(UserRepository.class).saveAndFlush(userModel);
+
             }
         });
 

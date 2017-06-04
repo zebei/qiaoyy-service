@@ -27,7 +27,7 @@ public class LoginService {
 		this.response = response;
 	}
 
-	private void writeJson(JSONObject json) {
+	public void writeJson(JSONObject json) {
 		try {
 			this.response.setContentType("application/json");
 			this.response.setCharacterEncoding("utf-8");
@@ -37,7 +37,7 @@ public class LoginService {
 		}
 	}
 	
-	private JSONObject prepareResponseJson() {
+	public JSONObject prepareResponseJson() {
 		JSONObject json = new JSONObject();
 		try {
 			json.put(Constants.WX_SESSION_MAGIC_ID, 1);
@@ -69,7 +69,7 @@ public class LoginService {
 	 * 处理登录请求
 	 * @return 登录成功将返回用户信息
 	 * */
-	public UserInfo login() throws IllegalArgumentException, LoginServiceException, ConfigurationException {
+	public JSONObject login() throws IllegalArgumentException, LoginServiceException, ConfigurationException {
 		String code = getHeader(Constants.WX_HEADER_CODE);
 		String encryptedData = getHeader(Constants.WX_HEADER_ENCRYPTED_DATA);
 		String iv = getHeader(Constants.WX_HEADER_IV);
@@ -85,25 +85,27 @@ public class LoginService {
 			throw error;
 		}
 		
-		JSONObject json = prepareResponseJson();
-		JSONObject session = new JSONObject();
-		JSONObject userInfo = null;
-		try {
-			session.put("id", loginResult.get("id"));
-			session.put("skey", loginResult.get("skey"));
-			json.put("session", session);
-			writeJson(json);
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+		/////////////
+//		JSONObject json = prepareResponseJson();
+//		JSONObject session = new JSONObject();
+//		JSONObject userInfo = null;
+//		UserInfo userInfoModel=UserInfo.BuildFromJson(userInfo);
+//		try {
+//		    userInfo = loginResult.getJSONObject("user_info");
+//		} catch (JSONException e) {
+//		    e.printStackTrace();
+//		}
+//		try {
+//			session.put("id", loginResult.get("id"));
+//			session.put("skey", loginResult.get("skey"));
+//			json.put("session", session);
+//			writeJson(json);
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+		return loginResult;
 		
-		try {
-			userInfo = loginResult.getJSONObject("user_info");
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 		
-		return UserInfo.BuildFromJson(userInfo);
 	}
 	
 	/**

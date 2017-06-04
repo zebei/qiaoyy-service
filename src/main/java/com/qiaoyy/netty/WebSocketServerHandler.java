@@ -1,19 +1,43 @@
 package com.qiaoyy.netty;
 
+<<<<<<< HEAD
 import com.alibaba.fastjson.JSON;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.thread.ThreadPool;
 import com.qiaoyy.thread.ThreadType;
 import com.qiaoyy.util.MBRequest;
+=======
+import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
+import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+>>>>>>> 68a35bb8c2ed972d64070637d34a45f863715cc6
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.*;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
+<<<<<<< HEAD
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.*;
+=======
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+>>>>>>> 68a35bb8c2ed972d64070637d34a45f863715cc6
 import io.netty.util.CharsetUtil;
 import org.springframework.util.StringUtils;
 
+<<<<<<< HEAD
 import java.net.SocketAddress;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +46,19 @@ import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+=======
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.StoneManager;
+import com.qiaoyy.thread.ThreadPool;
+import com.qiaoyy.thread.ThreadType;
+>>>>>>> 68a35bb8c2ed972d64070637d34a45f863715cc6
 
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
     private WebSocketServerHandshaker handshaker;
-
+    
+    
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         super.channelActive(ctx);
@@ -56,6 +89,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
+    @SuppressWarnings("deprecation")
     protected void handleHttpRequest(ChannelHandlerContext ctx,
                                      FullHttpRequest req) throws Exception {
         // 如果HTTP解码失败，返回HHTP异常
@@ -121,11 +155,16 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         ChannelMgr.getInstance().updateChannelHearbeatTime(ctx);
 
         // 返回应答消息
+        
         String request = ((TextWebSocketFrame) frame).text();
         AppLog.LOG_INTERFACE.info(String.format("[%s] received - [%s]", ctx.channel(), request));
         try {
             ThreadPool.dispatch(ThreadType.MAIN_THREAD, () -> {
                 // TODO 从这里可以接入到具体的WS逻辑处理
+                JSONObject msgJsonObject=JSON.parseObject(request);
+                if ("stone".equals(msgJsonObject.getString("game"))) {
+                    StoneManager.getInstance().operationCheck(ctx, msgJsonObject.getJSONObject("data"));
+                }
             });
         } catch (Exception e) {
             AppLog.LOG_INTERFACE.error("socket frame error", e);
@@ -149,6 +188,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         ctx.channel().writeAndFlush(new TextWebSocketFrame(sentMsg));
     }
 
+    @SuppressWarnings("deprecation")
     protected static void sendHttpResponse(ChannelHandlerContext ctx,
                                            FullHttpRequest req, FullHttpResponse res) {
         // 返回应答给客户端

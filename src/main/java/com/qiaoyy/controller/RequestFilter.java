@@ -1,10 +1,5 @@
 package com.qiaoyy.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.qiaoyy.log.AppLog;
-import com.qiaoyy.util.MBRequest;
-import com.qiaoyy.util.MBUtil;
-
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -15,6 +10,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.util.MBRequest;
+import com.qiaoyy.util.MBUtil;
 
 /**
  * Created by Henry on 2017/5/31.

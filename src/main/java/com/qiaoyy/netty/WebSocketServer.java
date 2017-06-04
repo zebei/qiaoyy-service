@@ -1,7 +1,5 @@
 package com.qiaoyy.netty;
 
-import com.qiaoyy.core.AppInit;
-import com.qiaoyy.log.AppLog;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -13,16 +11,9 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.util.concurrent.DefaultThreadFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.nio.charset.Charset;
-import java.util.Properties;
-import java.util.concurrent.Executors;
+import com.qiaoyy.core.AppInit;
+import com.qiaoyy.log.AppLog;
 
 /**
  * WebSocket服务
