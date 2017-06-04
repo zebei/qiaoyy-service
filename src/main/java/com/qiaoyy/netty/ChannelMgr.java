@@ -23,6 +23,8 @@ public class ChannelMgr implements Tickable {
     public ConcurrentHashMap<Long, Player> playerMap;
     private static ChannelMgr inst;
 
+    private volatile boolean inited = false;
+
     /**
      * 心跳过期时间
      */
@@ -37,12 +39,13 @@ public class ChannelMgr implements Tickable {
         if (AppInit.run.getEnvironment().containsProperty("app.channel.overdue")) {
             overdueTime = Integer.parseInt(AppInit.run.getEnvironment().getProperty("app.channel.overdue"));
         }
+        inited = true;
     }
 
     @Override
     public void tick() {
-        if (AppLog.LOG_COMMON.isDebugEnabled()) {
-            AppLog.LOG_COMMON.debug("channel.heartbeat.check...");
+        if (!inited) {
+            return;
         }
         channelMap.values().forEach(ChannelUser::hearbeat);
     }

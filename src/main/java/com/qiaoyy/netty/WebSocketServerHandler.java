@@ -140,7 +140,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             if (api == null) {
                 throw new IllegalArgumentException("Api id error");
             }
-            AppLog.LOG_INTERFACE.info(String.format("[%s] [{}] - %s", ctx.channel(), api.getNote(), request));
+            AppLog.LOG_INTERFACE.info(String.format("[%s] [%s] - %s", ctx.channel(), api.getNote(), request));
             ThreadPool.dispatch(api.getThreadType(), () -> {
                 GameDispather.getInstance().dispatch(api, msgJsonObject.getJSONObject("data"), ctx);
             });

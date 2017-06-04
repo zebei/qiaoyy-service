@@ -72,7 +72,6 @@ public class WebSocketServer {
             }
             // 启动心跳定时检测
             ChannelMgr.getInstance().init();
-            ChannelMgr.getInstance().startChannelTick();
         } catch (InterruptedException e) {
             AppLog.stdout("webSocket.port.bind.err - {}", port);
         }
