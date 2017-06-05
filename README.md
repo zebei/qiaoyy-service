@@ -75,5 +75,5 @@ spring-data-jpa的方式让数据访问更简单，使用方式可参照User的�
 
 log 选用log4j  
 
-数据库选择mysql 连接 mybatis
+<s>数据库选择mysql 连接 mybatis</s>选用jpa
 
