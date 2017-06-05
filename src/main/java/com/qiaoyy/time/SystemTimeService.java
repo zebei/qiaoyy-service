@@ -1,8 +1,5 @@
 package com.qiaoyy.time;
 
-import com.qiaoyy.core.Globals;
-import com.qiaoyy.thread.ThreadType;
-
 import java.util.Date;
 
 /**

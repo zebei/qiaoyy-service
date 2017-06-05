@@ -1,14 +1,9 @@
 package com.qiaoyy.netty;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.qiaoyy.log.AppLog;
-import com.qiaoyy.mannger.StoneManager;
-import com.qiaoyy.mannger.dispather.Api;
-import com.qiaoyy.mannger.dispather.GameDispather;
-import com.qiaoyy.thread.ThreadPool;
-import com.qiaoyy.thread.ThreadType;
-import com.qiaoyy.util.MBRequest;
+import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
+import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
+import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -16,24 +11,40 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
-import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
-import io.netty.handler.codec.http.websocketx.*;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PingWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.PongWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
+import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
 
 import java.util.List;
 import java.util.Map;
 
-import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
-import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
-import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
-import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.dispather.Api;
+import com.qiaoyy.mannger.dispather.GameDispather;
+import com.qiaoyy.thread.ThreadPool;
+import com.qiaoyy.util.MBRequest;
+
+import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
+    @Autowired
+    private GameDispather gameDispather;
+    
     private WebSocketServerHandshaker handshaker;
-
+    // websocket 服务的 uri
+    private static final String WEBSOCKET_PATH = "/websocket";
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -97,9 +108,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
 
         // 构造握手响应返回，本机测试
-        WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
-                "ws://localhost:" + WebSocketServer.port + "/websocket", null,
-                false);
+//        WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
+//                "ws://localhost:" + WebSocketServer.port + "/websocket", null,
+//                false);
+        WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(getWebSocketLocation(req), null, true);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory
@@ -109,7 +121,10 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
 
     }
-
+    private static String getWebSocketLocation(FullHttpRequest req) {
+        String location = req.headers().get(HOST) + WEBSOCKET_PATH;
+        return "ws://" + location;
+    }
     protected void handleWebSocketFrame(ChannelHandlerContext ctx, WebSocketFrame frame) {
 
         // 判断是否是关闭链路的指令
@@ -142,7 +157,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             }
             AppLog.LOG_INTERFACE.info(String.format("[%s] [%s] - %s", ctx.channel(), api.getNote(), request));
             ThreadPool.dispatch(api.getThreadType(), () -> {
-                GameDispather.getInstance().dispatch(api, msgJsonObject.getJSONObject("data"), ctx);
+                gameDispather.dispatch(api, msgJsonObject.getJSONObject("data"), ctx);
             });
         } catch (Exception e) {
             AppLog.LOG_INTERFACE.info(String.format("[%s] received - %s", ctx.channel(), request));

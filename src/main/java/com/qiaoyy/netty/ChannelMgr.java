@@ -1,16 +1,15 @@
 package com.qiaoyy.netty;
 
-import com.qiaoyy.core.AppInit;
-import com.qiaoyy.core.Globals;
-import com.qiaoyy.log.AppLog;
-import com.qiaoyy.mannger.user.Player;
-import com.qiaoyy.thread.ThreadType;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.qiaoyy.core.AppInit;
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.user.Player;
 
 /**
  * @author 何金成
@@ -105,11 +104,13 @@ public class ChannelMgr implements Tickable {
      */
     public void removeChannel(ChannelHandlerContext ctx) {
         ChannelUser channelUser = channelMap.get(ctx.channel().id().asShortText());
-        channelUser.ctx.close();
-        channelUser = channelMap.remove(channelUser.channelId);
-        playerMap.remove(channelUser.player.getUserid());
-        if (channelUser != null) {
-            AppLog.LOG_NET.info("channel.close - userid:{} - channelId:{}", channelUser.player.getUserid(), channelUser.channelId);
+        if (channelUser!=null) {
+            channelUser.ctx.close();
+            channelUser = channelMap.remove(channelUser.channelId);
+            playerMap.remove(channelUser.player.getUserid());
+            if (channelUser != null) {
+                AppLog.LOG_NET.info("channel.close - userid:{} - channelId:{}", channelUser.player.getUserid(), channelUser.channelId);
+            }
         }
     }
 
@@ -124,7 +125,7 @@ public class ChannelMgr implements Tickable {
         Iterator<ChannelUser> it = channelMap.values().iterator();
         while (it.hasNext()) {
             ChannelUser u = it.next();
-            if (u.player.getUserid() == userid) {
+            if (u.player.getUserid().equals(userid)) {
                 it.remove();
                 u.ctx.close();
                 AppLog.LOG_NET.info("channel.remove - userid:{} - channelId:{}", userid, u.channelId);
@@ -139,7 +140,14 @@ public class ChannelMgr implements Tickable {
      * @return
      */
     public ChannelUser findByUserId(Long userId) {
-        return channelMap.get(userId);
+        Iterator<ChannelUser> it = channelMap.values().iterator();
+        while (it.hasNext()) {
+            ChannelUser u = it.next();
+            if (u.player.getUserid().equals(userId)) {
+              return u;  
+            }
+        }
+        return null;
     }
 
     /**

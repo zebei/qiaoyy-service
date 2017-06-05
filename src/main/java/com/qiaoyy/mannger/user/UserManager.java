@@ -11,18 +11,10 @@ import com.qiaoyy.thread.ThreadType;
 
 @Component
 public class UserManager {
-    private static final UserManager userManager = new UserManager();
 
     @Autowired
     private UserRepository userRepository;
 
-    private UserManager() {
-
-    }
-
-    public static UserManager getInstance() {
-        return userManager;
-    }
 
     public void loginSaveUser(UserModel userModel) {
         long currentTime = System.currentTimeMillis();

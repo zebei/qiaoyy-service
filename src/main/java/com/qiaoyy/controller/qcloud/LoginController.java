@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.beanutils.BeanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,13 +23,16 @@ import com.qiaoyy.model.UserModel;
 
 @Controller
 public class LoginController {
-
+    
+    @Autowired
+    private UserManager userManager;
     /**
      * 处理登录请求
      */
     @RequestMapping(value = "/login")
     @ResponseBody
     public void login(HttpServletRequest request, HttpServletResponse response) {
+        
         // 通过 ServletRequest 和 ServletResponse 初始化登录服务
         LoginService service = new LoginService(request, response);
         try {
@@ -46,7 +50,7 @@ public class LoginController {
             UserModel userModel = new UserModel();
             try {
                 BeanUtils.copyProperties(userModel, userInfoModel);
-                UserManager.getInstance().loginSaveUser(userModel);
+                userManager.loginSaveUser(userModel);
                 session.put("id", loginResult.get("id"));
                 session.put("skey", loginResult.get("skey"));
                 session.put("userId", userModel.getId());

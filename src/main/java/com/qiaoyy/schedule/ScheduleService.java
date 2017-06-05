@@ -1,10 +1,8 @@
 package com.qiaoyy.schedule;
 
-import com.qiaoyy.thread.ThreadType;
-
 import java.util.Date;
 
-import static sun.management.snmp.jvminstr.JvmThreadInstanceEntryImpl.ThreadStateMap.Byte0.runnable;
+import com.qiaoyy.thread.ThreadType;
 
 /**
  * 定时任务管理器

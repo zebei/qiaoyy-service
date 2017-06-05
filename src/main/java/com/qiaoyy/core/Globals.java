@@ -3,7 +3,6 @@ package com.qiaoyy.core;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.mannger.user.Player;
 import com.qiaoyy.netty.ChannelMgr;
-import com.qiaoyy.netty.Tickable;
 import com.qiaoyy.schedule.ScheduleService;
 import com.qiaoyy.schedule.ScheduleServiceImp;
 import com.qiaoyy.thread.ThreadType;

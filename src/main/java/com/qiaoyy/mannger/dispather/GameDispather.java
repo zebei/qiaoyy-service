@@ -1,8 +1,11 @@
 package com.qiaoyy.mannger.dispather;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.alibaba.fastjson.JSONObject;
-import com.qiaoyy.mannger.StoneManager;
+import com.qiaoyy.mannger.game.StoneManager;
 import com.qiaoyy.netty.WebSocketServerHandler;
+
 import io.netty.channel.ChannelHandlerContext;
 
 /**
@@ -14,10 +17,10 @@ import io.netty.channel.ChannelHandlerContext;
  * @date 2015年12月14日 下午7:12:57
  */
 public class GameDispather {
-    private static GameDispather gameDispather = new GameDispather();
-
-    private GameDispather() {
-    }
+    @Autowired
+    private  StoneManager stoneManager;
+  
+    
 
     /**
      * Init mgr.
@@ -25,17 +28,6 @@ public class GameDispather {
     public void initMgr() {
     }
 
-    /**
-     * Gets instance.
-     *
-     * @return the instance
-     */
-    public static GameDispather getInstance() {
-        if (null == gameDispather) {
-            gameDispather = new GameDispather();
-        }
-        return gameDispather;
-    }
 
     /**
      * 消息路由分发
@@ -43,14 +35,14 @@ public class GameDispather {
      * @param api
      * @param data
      */
-    public void dispatch(Api api, JSONObject data, ChannelHandlerContext ctx) {
+    public  void dispatch(Api api, JSONObject data, ChannelHandlerContext ctx) {
         switch (api) {
             case TEST:
                 // TEST CODE
                 WebSocketServerHandler.writeJSON(ctx, data);
                 break;
             case STONE:
-                StoneManager.getInstance().operationCheck(ctx, data);
+                stoneManager.operationCheck(ctx, data);
                 break;
         }
     }
