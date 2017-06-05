@@ -1,6 +1,9 @@
 package com.qiaoyy.core;
 
+import org.springframework.stereotype.Component;
+
 import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.dispather.GameDispather;
 import com.qiaoyy.mannger.user.Player;
 import com.qiaoyy.netty.ChannelMgr;
 import com.qiaoyy.schedule.ScheduleService;
@@ -12,7 +15,9 @@ import com.qiaoyy.time.TimeService;
 /**
  * Created by Henry on 2017/6/4.
  */
+@Component
 public class Globals {
+
 
     /**
      * 时间服务
@@ -86,5 +91,14 @@ public class Globals {
 
     public static Player getPlayer(long userId) {
         return ChannelMgr.getInstance().playerMap.get(userId);
+    }
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static  GameDispather getGameDispather() {
+        
+        return AppInit.run.getBean(GameDispather.class);
     }
 }

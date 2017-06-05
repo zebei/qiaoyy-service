@@ -1,5 +1,6 @@
 package com.qiaoyy.netty;
 
+import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 import static io.netty.handler.codec.http.HttpHeaders.isKeepAlive;
 import static io.netty.handler.codec.http.HttpHeaders.setContentLength;
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
@@ -27,20 +28,15 @@ import io.netty.util.CharsetUtil;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.qiaoyy.core.Globals;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.mannger.dispather.Api;
-import com.qiaoyy.mannger.dispather.GameDispather;
 import com.qiaoyy.thread.ThreadPool;
 import com.qiaoyy.util.MBRequest;
-
-import static io.netty.handler.codec.http.HttpHeaderNames.HOST;
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
-    @Autowired
-    private GameDispather gameDispather;
+
     
     private WebSocketServerHandshaker handshaker;
     // websocket 服务的 uri
@@ -157,7 +153,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
             }
             AppLog.LOG_INTERFACE.info(String.format("[%s] [%s] - %s", ctx.channel(), api.getNote(), request));
             ThreadPool.dispatch(api.getThreadType(), () -> {
-                gameDispather.dispatch(api, msgJsonObject.getJSONObject("data"), ctx);
+                Globals.getGameDispather().dispatch(api, msgJsonObject.getJSONObject("data"), ctx);
             });
         } catch (Exception e) {
             AppLog.LOG_INTERFACE.info(String.format("[%s] received - %s", ctx.channel(), request));

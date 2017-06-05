@@ -1,6 +1,7 @@
 package com.qiaoyy.mannger.dispather;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.mannger.game.StoneManager;
@@ -16,6 +17,7 @@ import io.netty.channel.ChannelHandlerContext;
  * @Description: 消息路由分发
  * @date 2015年12月14日 下午7:12:57
  */
+@Component
 public class GameDispather {
     @Autowired
     private  StoneManager stoneManager;
@@ -27,8 +29,8 @@ public class GameDispather {
      */
     public void initMgr() {
     }
-
-
+    
+ 
     /**
      * 消息路由分发
      *

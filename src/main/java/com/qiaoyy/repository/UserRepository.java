@@ -17,6 +17,7 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     public UserModel findByUserid(@Param("userid") Long userid);
     @Query(value="from UserModel where open_id=:openId")
     public UserModel findByOpenId(@Param("openId")String openId);
-    
+    @Query(value = "update UserModel  set score =score+?1 where id = ?2",nativeQuery = true)
+    int updateScoreById( Integer changeScore,  Long id);
     
 }

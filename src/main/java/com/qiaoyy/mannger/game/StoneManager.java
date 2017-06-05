@@ -19,9 +19,12 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.mannger.user.UserManager;
+import com.qiaoyy.model.GameStoneLog;
 import com.qiaoyy.model.UserModel;
 import com.qiaoyy.netty.ChannelMgr;
 import com.qiaoyy.netty.WebSocketServerHandler;
+import com.qiaoyy.repository.GameStoneRepository;
+import com.qiaoyy.repository.UserRepository;
 import com.qiaoyy.util.MBResponse;
 import com.qiaoyy.util.MBResponseCode;
 
@@ -30,6 +33,10 @@ public class StoneManager {
     
     @Autowired
     private UserManager userManager;
+    @Autowired
+    private GameStoneRepository gameStoneRepository;
+    @Autowired
+    private UserRepository userRepository;
     
     public ConcurrentHashMap<Long, ChannelGroup> pkSceneMap = new ConcurrentHashMap<Long, ChannelGroup>();
     public Map<Long, Map<Long, Integer>> pkChoiceMap = new HashMap<>();
@@ -96,10 +103,11 @@ public class StoneManager {
             //WebSocketServerHandler.writeJSON(ctx, MBResponse.getMBResponse(MBResponseCode.SUCCESS));
             return;
         }
-//        if (waitingUsers.contains(Long.valueOf(userId))) {
-//            //WebSocketServerHandler.writeJSON(ctx,MBResponse.getMBResponse(MBResponseCode.SUCCESS));
-//            return;
-//        }
+        //单用户本地测试注掉
+        if (waitingUsers.contains(Long.valueOf(userId))) {
+            //WebSocketServerHandler.writeJSON(ctx,MBResponse.getMBResponse(MBResponseCode.SUCCESS));
+            return;
+        }
 
         Long fightUserId = 0L;
         // 取出第一个人
@@ -125,6 +133,7 @@ public class StoneManager {
         JSONObject userReturnMsg = new JSONObject();
         UserModel userModel = userManager.findByUserid(userId);
         UserModel fightModel = userManager.findByUserid(fightUserId);
+        fightModel.setId(10000019L);
 
         JSONArray userArray = new JSONArray();
         userArray.add(userModel);
@@ -154,14 +163,56 @@ public class StoneManager {
            resultMap = pkChoiceMap.remove(userId);
            pkChoiceMap.remove(fightUserId);
         }
+        //db add log
+        GameStoneLog gameStoneLog=new GameStoneLog();
+        gameStoneLog.setUserid(userId);
+        gameStoneLog.setFightUserId(fightUserId);
+        gameStoneLog.setUserChoice(resultMap.get(userId));
+        gameStoneLog.setFightChoice(resultMap.get(fightUserId));
+        gameStoneLog.setUserRoundScore(1);//增加1分  配置待定
+        gameStoneLog.setFightRoundScore(1);
+        gameStoneLog.setEndGameTime(System.currentTimeMillis());
+        gameStoneRepository.saveAndFlush(gameStoneLog);
+        //发送结果
+        
         if (resultMap.get(userId)==resultMap.get(fightUserId)) {
             //平局
+           sendEndGameMessage(resultMap,userId,fightUserId,0,0);
+            
             
         }else if (resultMap.get(userId)>resultMap.get(fightUserId)||(resultMap.get(userId)==1&&resultMap.get(fightUserId)==3)) {
             //userid获胜
+            userRepository.updateScoreById(1, userId);
+            userRepository.updateScoreById(-1, fightUserId);
+            sendEndGameMessage(resultMap,userId,fightUserId,1,-1);
+            
         }else {
             //userid失败
+            userRepository.updateScoreById(-1, userId);
+            userRepository.updateScoreById(1, fightUserId);
+            sendEndGameMessage(resultMap,userId,fightUserId,-1,1);
         }
+        //清空选择
+        /*******清空选择*********/
         
+    }
+    private void sendEndGameMessage(Map<Long, Integer> resultMap, Long userId, Long fightUserId, int i, int j) {
+        JSONArray userArray = new JSONArray();
+        UserModel userModel = userManager.findByUserid(userId);
+        UserModel fightModel = userManager.findByUserid(fightUserId);
+        JSONObject userJsonObject=new JSONObject();
+        userJsonObject.put("userid", userModel.getId());
+        userJsonObject.put("roundScore", 0);
+        userJsonObject.put("totalScore", userModel.getScore());
+        userJsonObject.put("choice", resultMap.get(userId));
+        userArray.add(userJsonObject);
+        
+        JSONObject fightJsonObject=new JSONObject();
+        fightJsonObject.put("userid", fightModel.getId());
+        fightJsonObject.put("roundScore", 0);
+        fightJsonObject.put("totalScore", fightModel.getScore());
+        fightJsonObject.put("choice", resultMap.get(fightUserId));
+        userArray.add(fightJsonObject);
+        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.STONE_END, userArray));
     }
 }
