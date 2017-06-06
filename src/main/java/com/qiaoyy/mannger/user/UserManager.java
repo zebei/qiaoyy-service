@@ -17,10 +17,15 @@ public class UserManager {
 
 
     public void loginSaveUser(UserModel userModel) {
+        UserModel findByOpenId = userRepository.findByOpenId(userModel.getOpenId());
         long currentTime = System.currentTimeMillis();
-        userModel.setLastLoginTime(currentTime);
-        userModel.setRegisTime(currentTime);
-        loginSaveUserThread(userModel);
+        if(findByOpenId!=null){
+            userRepository.updateLastLoginTime(currentTime,userModel.getId());
+        }else {
+            userModel.setLastLoginTime(currentTime);
+            userModel.setRegisTime(currentTime);
+            loginSaveUserThread(userModel);
+        }
     }
 
     private void loginSaveUserThread(UserModel user) {

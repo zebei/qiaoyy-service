@@ -21,6 +21,10 @@ public interface UserRepository extends JpaRepository<UserModel, Long> {
     public UserModel findByOpenId(@Param("openId")String openId);
     @Transactional
     @Modifying(clearAutomatically = true)
+    @Query(value = "update qyuser  set last_login_time =?1 where id = ?2",nativeQuery = true)
+    int updateLastLoginTime( Long lastLoginTime,  Long id);
+    @Transactional
+    @Modifying(clearAutomatically = true)
     @Query(value = "update qyuser  set score =score+?1 where id = ?2",nativeQuery = true)
     int updateScoreById( Integer changeScore,  Long id);
     
