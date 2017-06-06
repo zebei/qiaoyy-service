@@ -1,10 +1,12 @@
 package com.qiaoyy.model;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.alibaba.fastjson.JSONObject;
 @Table(name = "game_stone_log")
+@Entity
 public class GameStoneLog {
     @Id
     private long id;

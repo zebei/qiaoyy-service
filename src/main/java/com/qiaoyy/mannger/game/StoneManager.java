@@ -8,8 +8,6 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +19,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.qiaoyy.mannger.user.UserManager;
 import com.qiaoyy.model.GameStoneLog;
 import com.qiaoyy.model.UserModel;
-import com.qiaoyy.netty.ChannelMgr;
 import com.qiaoyy.netty.WebSocketServerHandler;
 import com.qiaoyy.repository.GameStoneRepository;
 import com.qiaoyy.repository.UserRepository;
@@ -41,6 +38,7 @@ public class StoneManager {
     public ConcurrentHashMap<Long, ChannelGroup> pkSceneMap = new ConcurrentHashMap<Long, ChannelGroup>();
     public Map<Long, Map<Long, Integer>> pkChoiceMap = new HashMap<>();
     public List<Long> waitingUsers = new Vector<Long>();
+    
     private static int gametime = 5;
   
 
@@ -70,6 +68,10 @@ public class StoneManager {
     }
 
     private void joinRoom(ChannelHandlerContext ctx, JSONObject data) {
+//        if (waitingUsers.size()==0) {
+//            waitingUsers.add(10000019L);
+//            
+//        }
         Long userId = data.getLong("userId");
         // 匹配等待队列
         if (waitingUsers.size() == 0) {
@@ -92,7 +94,7 @@ public class StoneManager {
                 userReturnMsg.put("roomUsers", userArray);
                 userReturnMsg.put("gameTime", 5);
 
-                WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.STONE_START, userReturnMsg));
+                WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
 
                 return;
             }
@@ -100,12 +102,10 @@ public class StoneManager {
                 // 没有人，直接加入等待队列
                 waitingUsers.add(userId);
             }
-            //WebSocketServerHandler.writeJSON(ctx, MBResponse.getMBResponse(MBResponseCode.SUCCESS));
             return;
         }
         //单用户本地测试注掉
         if (waitingUsers.contains(Long.valueOf(userId))) {
-            //WebSocketServerHandler.writeJSON(ctx,MBResponse.getMBResponse(MBResponseCode.SUCCESS));
             return;
         }
 
@@ -118,7 +118,8 @@ public class StoneManager {
                     GlobalEventExecutor.INSTANCE);
             waitingUsers.remove(fightUserId);
             channelGroup.add(ctx.channel());
-            channelGroup.add(ChannelMgr.getInstance().getChannel(fightUserId).channel());
+            channelGroup.add(ctx.channel());
+            //channelGroup.add(ChannelMgr.getInstance().getChannel(fightUserId).channel());
             pkSceneMap.put(userId, channelGroup);
             pkSceneMap.put(fightUserId, channelGroup);
             //用户选项组
@@ -133,7 +134,6 @@ public class StoneManager {
         JSONObject userReturnMsg = new JSONObject();
         UserModel userModel = userManager.findByUserid(userId);
         UserModel fightModel = userManager.findByUserid(fightUserId);
-        fightModel.setId(10000019L);
 
         JSONArray userArray = new JSONArray();
         userArray.add(userModel);
@@ -141,13 +141,16 @@ public class StoneManager {
         userReturnMsg.put("roomUsers", userArray);
         userReturnMsg.put("gameTime", gametime);
 
-        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.STONE_START, userReturnMsg));
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            public void run() {
-                endGame(userId);
-            }
-        }, 0 , gametime*1000);
+        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
+        try {
+            Thread.sleep(gametime*1000);
+            endGame(userId);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+          
         
     }
     private void endGame(Long userId) {
@@ -174,13 +177,13 @@ public class StoneManager {
         gameStoneLog.setEndGameTime(System.currentTimeMillis());
         gameStoneRepository.saveAndFlush(gameStoneLog);
         //发送结果
-        
+        if (resultMap.get(userId)==0||resultMap.get(fightUserId)==0) {
+            sendEndGameMessage(resultMap,userId,fightUserId,0,0);
+        }
         if (resultMap.get(userId)==resultMap.get(fightUserId)) {
             //平局
            sendEndGameMessage(resultMap,userId,fightUserId,0,0);
-            
-            
-        }else if (resultMap.get(userId)>resultMap.get(fightUserId)||(resultMap.get(userId)==1&&resultMap.get(fightUserId)==3)) {
+        }else if ((resultMap.get(userId)!=3&&resultMap.get(userId)>resultMap.get(fightUserId))||(resultMap.get(userId)==1&&resultMap.get(fightUserId)==3)) {
             //userid获胜
             userRepository.updateScoreById(1, userId);
             userRepository.updateScoreById(-1, fightUserId);
@@ -192,27 +195,25 @@ public class StoneManager {
             userRepository.updateScoreById(1, fightUserId);
             sendEndGameMessage(resultMap,userId,fightUserId,-1,1);
         }
-        //清空选择
-        /*******清空选择*********/
         
     }
-    private void sendEndGameMessage(Map<Long, Integer> resultMap, Long userId, Long fightUserId, int i, int j) {
+    private void sendEndGameMessage(Map<Long, Integer> resultMap, Long userId, Long fightUserId, int userRoundScore, int fightRoundScore) {
         JSONArray userArray = new JSONArray();
         UserModel userModel = userManager.findByUserid(userId);
         UserModel fightModel = userManager.findByUserid(fightUserId);
         JSONObject userJsonObject=new JSONObject();
         userJsonObject.put("userid", userModel.getId());
-        userJsonObject.put("roundScore", 0);
+        userJsonObject.put("roundScore", userRoundScore);
         userJsonObject.put("totalScore", userModel.getScore());
         userJsonObject.put("choice", resultMap.get(userId));
         userArray.add(userJsonObject);
         
         JSONObject fightJsonObject=new JSONObject();
         fightJsonObject.put("userid", fightModel.getId());
-        fightJsonObject.put("roundScore", 0);
+        fightJsonObject.put("roundScore", fightRoundScore);
         fightJsonObject.put("totalScore", fightModel.getScore());
         fightJsonObject.put("choice", resultMap.get(fightUserId));
         userArray.add(fightJsonObject);
-        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.STONE_END, userArray));
+        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_END, userArray));
     }
 }
