@@ -20,6 +20,7 @@ public class UserManager {
         UserModel findByOpenId = userRepository.findByOpenId(userModel.getOpenId());
         long currentTime = System.currentTimeMillis();
         if(findByOpenId!=null){
+            userModel.setId(findByOpenId.getId());
             userRepository.updateLastLoginTime(currentTime,userModel.getId());
         }else {
             userModel.setLastLoginTime(currentTime);
