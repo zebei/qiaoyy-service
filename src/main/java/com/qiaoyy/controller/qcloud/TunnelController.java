@@ -23,7 +23,7 @@ public class TunnelController {
      */
     @RequestMapping(value = "/tunnel")
     @ResponseBody
-    public String createTunnel(HttpServletRequest request, HttpServletResponse response) {
+    public void createTunnel(HttpServletRequest request, HttpServletResponse response) {
 
         // 创建信道服务处理信道相关请求
         TunnelService tunnelService = new TunnelService(request, response);
@@ -35,10 +35,8 @@ public class TunnelController {
 
             // 需要实现信道处理器，ChatTunnelHandler 是一个实现的范例
             tunnelService.handle(new ChatTunnelHandler(), options);
-            return "ok";
         } catch (ConfigurationException e) {
             e.printStackTrace();
-            return "err";
         }
     }
 }
