@@ -1,0 +1,8 @@
+2017-06-06 15:11:57,397 [localhost-startStop-1] INFO  (InitListener.java:26) - app.initlistener.init
+2017-06-06 15:11:57,418 [localhost-startStop-1] INFO  (RequestFilter.java:44) - request.filter.init
+2017-06-06 15:12:41,143 [localhost-startStop-2] INFO  (RequestFilter.java:26) - request.filter.destory
+2017-06-06 15:12:41,144 [localhost-startStop-2] INFO  (InitListener.java:34) - InitListener contextDestroyed
+2017-06-06 15:12:41,144 [localhost-startStop-2] INFO  (InitListener.java:35) - app.initlistener.destoryed - InitListener
+2017-06-06 15:13:00,291 [localhost-startStop-1] INFO  (InitListener.java:19) - app.initlistener.init - InitListener
+2017-06-06 15:13:00,668 [localhost-startStop-1] INFO  (InitListener.java:26) - app.initlistener.init
+2017-06-06 15:13:00,675 [localhost-startStop-1] INFO  (RequestFilter.java:44) - request.filter.init

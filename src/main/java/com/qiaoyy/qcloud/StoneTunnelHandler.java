@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.qcloud.weapp.authorization.UserInfo;
 import com.qcloud.weapp.tunnel.EmitError;
@@ -13,6 +15,10 @@ import com.qcloud.weapp.tunnel.TunnelHandler;
 import com.qcloud.weapp.tunnel.TunnelInvalidInfo;
 import com.qcloud.weapp.tunnel.TunnelMessage;
 import com.qcloud.weapp.tunnel.TunnelRoom;
+import com.qiaoyy.log.AppLog;
+import com.qiaoyy.mannger.game.StoneManager;
+import com.qiaoyy.model.UserModel;
+import com.qiaoyy.repository.UserRepository;
 
 /**
  * <h1>实现 WebSocket 信道处理器</h1>
@@ -26,12 +32,18 @@ import com.qcloud.weapp.tunnel.TunnelRoom;
  *     <li>onTunnelClose() -   当信道关闭时，清理关于该信道的信息，以及回收相关资源</li>
  * </ul>
  * */
-public class ChatTunnelHandler implements TunnelHandler {
+@Component
+public class StoneTunnelHandler implements TunnelHandler {
 	
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private StoneManager stoneManager;
 	/**
 	 * 记录 WebSocket 信道对应的用户。在实际的业务中，应该使用数据库进行存储跟踪，这里作为示例只是演示其作用
 	 * */
-	private static HashMap<String, UserInfo> userMap = new HashMap<String, UserInfo>();
+	private static HashMap<String, UserModel> userMap = new HashMap<String, UserModel>();
+	public  HashMap<Long, Tunnel> tunnelMap=new HashMap<>();
 	
 	/**
 	 * 创建一个房间，包含当前已连接的 WebSocket 信道列表
@@ -48,9 +60,11 @@ public class ChatTunnelHandler implements TunnelHandler {
 			userInfo = new UserInfo();
 		}
 		if (userInfo != null) {
-			userMap.put(tunnel.getTunnelId(), userInfo);
+		    UserModel userModel=userRepository.findByOpenId(userInfo.getOpenId());
+			userMap.put(tunnel.getTunnelId(),userModel);
+			tunnelMap.put(userModel.getId(), tunnel);
+			AppLog.LOG_COMMON.info(String.format("[%s] Tunnel Connected: %s",userModel.getId(), tunnel.getTunnelId()));
 		}
-		System.out.println(String.format("Tunnel Connected: %s-[%s]", tunnel.getTunnelId(),com.alibaba.fastjson.JSONObject.toJSONString(userInfo)));
 	}
 
 	/**
@@ -59,19 +73,19 @@ public class ChatTunnelHandler implements TunnelHandler {
 	 * */
 	@Override
 	public void onTunnelConnect(Tunnel tunnel) {
-		if (userMap.containsKey(tunnel.getTunnelId())) {
-			room.addTunnel(tunnel);
-			JSONObject peopleMessage = new JSONObject();
-			try {
-				peopleMessage.put("total", room.getTunnelCount());
-				peopleMessage.put("enter", new JSONObject(userMap.get(tunnel.getTunnelId())));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			broadcast("people", peopleMessage);
-		} else {
-			closeTunnel(tunnel);
-		}
+//		if (userMap.containsKey(tunnel.getTunnelId())) {
+//			room.addTunnel(tunnel);
+//			JSONObject peopleMessage = new JSONObject();
+//			try {
+//				peopleMessage.put("total", room.getTunnelCount());
+//				peopleMessage.put("enter", new JSONObject(userMap.get(tunnel.getTunnelId())));
+//			} catch (JSONException e) {
+//				e.printStackTrace();
+//			}
+//			broadcast("people", peopleMessage);
+//		} else {
+//			closeTunnel(tunnel);
+//		}
 	}
 
 	/**
@@ -81,18 +95,14 @@ public class ChatTunnelHandler implements TunnelHandler {
 	 * */
 	@Override
 	public void onTunnelMessage(Tunnel tunnel, TunnelMessage message) {
-		if (message.getType().equals("speak") && userMap.containsKey(tunnel.getTunnelId())) {
-			JSONObject speakMessage = new JSONObject();
-			try {
-				JSONObject messageContent = (JSONObject) message.getContent();
-				speakMessage.put("word", messageContent.getString("word"));
-				speakMessage.put("who", new JSONObject(userMap.get(tunnel.getTunnelId())));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			broadcast("speak", speakMessage);
-		} else {
-			closeTunnel(tunnel);
+	    JSONObject messageContent = (JSONObject) message.getContent();
+		if (message.getType().equals("join") && userMap.containsKey(tunnel.getTunnelId())) {
+		    stoneManager.joinRoom(tunnel, com.alibaba.fastjson.JSONObject.parseObject(messageContent.toString()));
+			//broadcast("speak", speakMessage);
+		} else if(message.getType().equals("changeChoice") && userMap.containsKey(tunnel.getTunnelId())) {
+		    stoneManager.changeChoice(com.alibaba.fastjson.JSONObject.parseObject(messageContent.toString()));
+		}else{
+		    closeTunnel(tunnel);
 		}
 
 	}
@@ -103,7 +113,7 @@ public class ChatTunnelHandler implements TunnelHandler {
 	 * */
 	@Override
 	public void onTunnelClose(Tunnel tunnel) {
-		UserInfo leaveUser = null;
+		UserModel leaveUser = null;
 		if (userMap.containsKey(tunnel.getTunnelId())) {
 			leaveUser = userMap.get(tunnel.getTunnelId());
 			userMap.remove(tunnel.getTunnelId());
@@ -129,7 +139,18 @@ public class ChatTunnelHandler implements TunnelHandler {
 			e.printStackTrace();
 		}
 	}
-
+	public void writeJSON(TunnelRoom tunnelRoom,String messageType,Object messageContent){
+	    try {
+            EmitResult result = tunnelRoom.broadcast(messageType, messageContent);
+            // 广播后发现的无效信道进行清理
+            for (TunnelInvalidInfo invalidInfo : result.getTunnelInvalidInfos()) {
+                onTunnelClose(Tunnel.getById(invalidInfo.getTunnelId()));
+            }
+        } catch (EmitError e) {
+            // 如果消息发送发生异常，这里可以进行错误处理或者重试的逻辑
+            e.printStackTrace();
+        }
+	}
 	/**
 	 * 广播消息到房间里所有的信道
 	 * */

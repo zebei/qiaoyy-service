@@ -1,9 +1,6 @@
 package com.qiaoyy.mannger.game;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.group.ChannelGroup;
-import io.netty.channel.group.DefaultChannelGroup;
-import io.netty.util.concurrent.GlobalEventExecutor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,20 +9,22 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.qcloud.weapp.tunnel.Tunnel;
+import com.qcloud.weapp.tunnel.TunnelRoom;
 import com.qiaoyy.mannger.user.UserManager;
 import com.qiaoyy.model.GameStoneLog;
 import com.qiaoyy.model.UserModel;
-import com.qiaoyy.netty.WebSocketServerHandler;
+import com.qiaoyy.qcloud.StoneTunnelHandler;
 import com.qiaoyy.repository.GameStoneRepository;
 import com.qiaoyy.repository.UserRepository;
 import com.qiaoyy.util.MBResponse;
 import com.qiaoyy.util.MBResponseCode;
 
-@Service
+@Component
 public class StoneManager {
     
     @Autowired
@@ -34,8 +33,10 @@ public class StoneManager {
     private GameStoneRepository gameStoneRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private StoneTunnelHandler stoneTunnelHandler;
     
-    public ConcurrentHashMap<Long, ChannelGroup> pkSceneMap = new ConcurrentHashMap<Long, ChannelGroup>();
+    public ConcurrentHashMap<Long, TunnelRoom> pkSceneMap = new ConcurrentHashMap<Long, TunnelRoom>();
     public Map<Long, Map<Long, Integer>> pkChoiceMap = new HashMap<>();
     public List<Long> waitingUsers = new Vector<Long>();
     
@@ -46,13 +47,13 @@ public class StoneManager {
     public void operationCheck(ChannelHandlerContext ctx, JSONObject data) {
         String operation = data.getString("operation");
         if (operation.equals("join")) {
-            joinRoom(ctx, data);
+        //   joinRoom(ctx, data);
         } else if (operation.equals("changeChoice")) {
-            changeChoice(ctx, data);
+          //  changeChoice(ctx, data);
         }
     }
 
-    private void changeChoice(ChannelHandlerContext ctx, JSONObject data) {
+    public void changeChoice(JSONObject data) {
         Long userId = data.getLong("userId");
         Integer userChoice = data.getInteger("choice");
         Map<Long, Integer> roomChoice = pkChoiceMap.get(userId);
@@ -67,11 +68,7 @@ public class StoneManager {
         pkChoiceMap.put(fightUserId, roomChoice);
     }
 
-    private void joinRoom(ChannelHandlerContext ctx, JSONObject data) {
-//        if (waitingUsers.size()==0) {
-//            waitingUsers.add(10000019L);
-//            
-//        }
+    public void joinRoom(Tunnel ctx, JSONObject data) {
         Long userId = data.getLong("userId");
         // 匹配等待队列
         if (waitingUsers.size() == 0) {
@@ -94,7 +91,7 @@ public class StoneManager {
                 userReturnMsg.put("roomUsers", userArray);
                 userReturnMsg.put("gameTime", 5);
 
-                WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
+                stoneTunnelHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)),MBResponseCode.WEBSOCKET_STONE_START ,MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
 
                 return;
             }
@@ -104,7 +101,6 @@ public class StoneManager {
             }
             return;
         }
-        //单用户本地测试注掉
         if (waitingUsers.contains(Long.valueOf(userId))) {
             return;
         }
@@ -114,12 +110,11 @@ public class StoneManager {
         synchronized (pkSceneMap) {
             fightUserId = waitingUsers.remove(0);
             //分发频道组
-            ChannelGroup channelGroup = new DefaultChannelGroup(
-                    GlobalEventExecutor.INSTANCE);
+            TunnelRoom channelGroup = new TunnelRoom();
             waitingUsers.remove(fightUserId);
-            channelGroup.add(ctx.channel());
-            channelGroup.add(ctx.channel());
-            //channelGroup.add(ChannelMgr.getInstance().getChannel(fightUserId).channel());
+            channelGroup.addTunnel(ctx);
+            //
+            channelGroup.addTunnel(stoneTunnelHandler.tunnelMap.get(fightUserId));
             pkSceneMap.put(userId, channelGroup);
             pkSceneMap.put(fightUserId, channelGroup);
             //用户选项组
@@ -141,7 +136,7 @@ public class StoneManager {
         userReturnMsg.put("roomUsers", userArray);
         userReturnMsg.put("gameTime", gametime);
 
-        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
+        stoneTunnelHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)),MBResponseCode.WEBSOCKET_STONE_START, MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_START, userReturnMsg));
         try {
             Thread.sleep(gametime*1000);
             endGame(userId);
@@ -214,6 +209,6 @@ public class StoneManager {
         fightJsonObject.put("totalScore", fightModel.getScore());
         fightJsonObject.put("choice", resultMap.get(fightUserId));
         userArray.add(fightJsonObject);
-        WebSocketServerHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)), MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_END, userArray));
+        stoneTunnelHandler.writeJSON(pkSceneMap.get(Long.valueOf(userId)),MBResponseCode.WEBSOCKET_STONE_END, MBResponse.getMBResponse(MBResponseCode.WEBSOCKET_STONE_END, userArray));
     }
 }
