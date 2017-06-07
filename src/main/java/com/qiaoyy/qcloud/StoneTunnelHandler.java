@@ -5,6 +5,8 @@ import java.util.HashMap;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+
+
 import org.springframework.stereotype.Component;
 
 import com.qcloud.weapp.authorization.UserInfo;
@@ -17,8 +19,8 @@ import com.qcloud.weapp.tunnel.TunnelMessage;
 import com.qcloud.weapp.tunnel.TunnelRoom;
 import com.qiaoyy.log.AppLog;
 import com.qiaoyy.mannger.game.StoneManager;
+import com.qiaoyy.mannger.user.UserManager;
 import com.qiaoyy.model.UserModel;
-import com.qiaoyy.repository.UserRepository;
 
 /**
  * <h1>实现 WebSocket 信道处理器</h1>
@@ -36,7 +38,7 @@ import com.qiaoyy.repository.UserRepository;
 public class StoneTunnelHandler implements TunnelHandler {
 	
     @Autowired
-    private UserRepository userRepository;
+    private UserManager userManager;
     @Autowired
     private StoneManager stoneManager;
 	/**
@@ -60,7 +62,7 @@ public class StoneTunnelHandler implements TunnelHandler {
 			userInfo = new UserInfo();
 		}
 		if (userInfo != null) {
-		    UserModel userModel=userRepository.findByOpenId(userInfo.getOpenId());
+		    UserModel userModel=userManager.findByOpenId(userInfo.getOpenId());
 			userMap.put(tunnel.getTunnelId(),userModel);
 			tunnelMap.put(userModel.getId(), tunnel);
 			AppLog.LOG_COMMON.info(String.format("[%s] Tunnel Connected: %s",userModel.getId(), tunnel.getTunnelId()));

@@ -43,4 +43,7 @@ public class UserManager {
     public UserModel findByUserid(Long userId) {
         return userRepository.findByUserid(userId);
     }
+    public UserModel findByOpenId(String openId){
+        return userRepository.findByOpenId(openId);
+    }
 }
